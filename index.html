@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123d2d">
+<title>Fairway Golf</title>
+<style>
+* {box-sizing:border-box}
+body {
+  margin:0; font-family:Arial,sans-serif;
+  background:#f4f7f3; color:#173b2b;
+}
+header {
+  background:#123d2d; color:white;
+  padding:24px 18px;
+}
+header h1 {margin:0}
+header p {opacity:.8}
+main {max-width:650px;margin:auto;padding:16px}
+nav {display:flex;gap:8px;margin-top:20px}
+button {
+  background:#19734b;color:white;border:0;
+  border-radius:10px;padding:12px;
+  font-size:15px;cursor:pointer;
+}
+nav button {flex:1;background:#315b47}
+.card {
+  background:white;border-radius:16px;
+  padding:18px;margin:15px 0;
+  box-shadow:0 2px 10px #0000000c;
+}
+input,select {
+  width:100%;padding:12px;margin:7px 0 15px;
+  border:1px solid #ccd8ce;border-radius:9px;
+  font-size:16px;
+}
+label {font-weight:bold;font-size:14px}
+.hidden {display:none}
+.stats {display:flex;gap:10px}
+.stat {
+  flex:1;text-align:center;background:#e7f0e9;
+  padding:15px 5px;border-radius:12px;
+}
+.stat strong {display:block;font-size:24px}
+.stat small {font-size:11px}
+.holes {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.hole {
+  background:#edf4ee;border-radius:12px;
+  padding:10px;text-align:center;
+}
+.hole input {text-align:center;margin:5px 0}
+.row {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;
+}
+.round {border-bottom:1px solid #ddd;padding:14px 0}
+.danger {background:#b44842}
+.secondary {background:#dfeae1;color:#174a31}
+.actions {display:flex;gap:8px;flex-wrap:wrap}
+.actions button {flex:1}
+small {color:#66796c}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⛳ Fairway</h1>
+  <p>Your golf. Your rounds. Your progress.</p>
+  <nav>
+    <button onclick="show('home')">Home</button>
+    <button onclick="show('play')">Play</button>
+    <button onclick="show('history')">History</button>
+  </nav>
+</header>
+
+<main>
+<section id="home">
+  <h2>My Golf Dashboard</h2>
+  <div class="stats">
+    <div class="stat">
+      <strong id="roundCount">0</strong>
+      <small>Rounds</small>
+    </div>
+    <div class="stat">
+      <strong id="best">—</strong>
+      <small>Best vs Par</small>
+    </div>
+    <div class="stat">
+      <strong id="holesPlayed">0</strong>
+      <small>Holes Played</small>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Ready to play?</h2>
+    <p>Record your next golf round.</p>
+    <button onclick="show('play')">
+      Start / Resume Round
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>Backup</h2>
+    <p>Keep a copy of your rounds in case you
+    change phones or clear browser data.</p>
+    <div class="actions">
+      <button onclick="exportData()">Export</button>
+      <button class="secondary"
+        onclick="document.getElementById('file').click()">
+        Import
+      </button>
+    </div>
+    <input type="file" id="file" accept=".json"
+      style="display:none" onchange="importData(event)">
+  </div>
+</section>
+
+<section id="play" class="hidden">
+  <h2>My Scorecard</h2>
+
+  <div id="setup" class="card">
+    <h3>New Round</h3>
+
+    <label>Golf Course</label>
+    <input id="course" placeholder="Golf Meggen">
+
+    <label>Date</label>
+    <input id="date" type="date">
+
+    <label>Holes</label>
+    <select id="count">
+      <option value="9">9 holes</option>
+      <option value="18">18 holes</option>
+    </select>
+
+    <label>Par of each hole</label>
+    <input id="pars"
+      placeholder="Example: 3,4,3,5,4,3,4,3,4">
+    <small>
+      Separate pars with commas.
+      Leave empty to use par 3 for every hole.
+    </small>
+
+    <p><button onclick="startRound()">
+      Create Scorecard
+    </button></p>
+  </div>
+
+  <div id="active" class="card hidden">
+    <h3 id="roundTitle"></h3>
+    <h2 id="total"></h2>
+    <div class="holes" id="holeGrid"></div>
+    <p><small>Scores save automatically.</small></p>
+    <div class="actions">
+      <button onclick="finishRound()">Finish Round</button>
+      <button class="danger" onclick="discard()">
+        Discard
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="history" class="hidden">
+  <h2>Round History</h2>
+  <div class="card" id="historyList"></div>
+</section>
+</main>
+
+<script>
+const KEY = "fairway-data-v1";
+
+let data = load();
+
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY));
+    if (saved && Array.isArray(saved.rounds)) return saved;
+  } catch(e) {}
+  return {rounds:[], draft:null};
+}
+
+function save() {
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+}
+
+function show(page) {
+  ["home","play","history"].forEach(id => {
+    document.getElementById(id).classList.toggle(
+      "hidden",id!==page
+    );
+  });
+  render();
+}
+
+function startRound() {
+  const course = document.getElementById("course").value.trim();
+  const date = document.getElementById("date").value;
+  const n = Number(document.getElementById("count").value);
+  const raw = document.getElementById("pars").value.trim();
+
+  if (!course || !date) {
+    alert("Please enter a course and date.");
+    return;
+  }
+
+  const pars = raw
+    ? raw.split(",").map(x=>Number(x.trim()))
+    : Array(n).fill(3);
+
+  if (pars.length!==n ||
+      pars.some(p=>!Number.isInteger(p)||p<1||p>10)) {
+    alert("Please enter valid pars for all holes.");
+    return;
+  }
+
+  data.draft = {
+    id:Date.now(),course,date,pars,
+    scores:Array(n).fill(null)
+  };
+  save();
+}
+
+function setScore(i,value) {
+  const score = value==="" ? null : Number(value);
+  if (score!==null &&
+      (!Number.isInteger(score)||score<1||score>30)) {
+    alert("Enter a score between 1 and 30.");
+    return;
+  }
+  data.draft.scores[i]=score;
+  save();
+}
+
+function setPar(i,value) {
+  const par=Number(value);
+  if (!Number.isInteger(par)||par<1||par>10) return;
+  data.draft.pars[i]=par;
+  save();
+}
+
+function finishRound() {
+  if (data.draft.scores.some(s=>s===null)) {
+    alert("Please complete all holes first.");
+    return;
+  }
+  data.rounds.unshift(data.draft);
+  data.draft=null;
+  save();
+  show("history");
+}
+
+function discard() {
+  if(confirm("Discard this unfinished round?")) {
+    data.draft=null;
+    save();
+  }
+}
+
+function deleteRound(id) {
+  if(confirm("Delete this round?")) {
+    data.rounds=data.rounds.filter(r=>r.id!==id);
+    save();
+  }
+}
+
+function render() {
+  const rounds=data.rounds;
+  document.getElementById("roundCount").textContent=rounds.length;
+  document.getElementById("holesPlayed").textContent=
+    rounds.reduce((sum,r)=>sum+r.scores.length,0);
+
+  const diffs=rounds.map(r=>
+    r.scores.reduce((a,b)=>a+b,0)-
+    r.pars.reduce((a,b)=>a+b,0)
+  );
+  const best=diffs.length?Math.min(...diffs):null;
+  document.getElementById("best").textContent=
+    best===null?"—":(best>0?"+":"")+best;
+
+  const d=data.draft;
+  document.getElementById("setup").classList.toggle("hidden",!!d);
+  document.getElementById("active").classList.toggle("hidden",!d);
+
+  if(d) {
+    document.getElementById("roundTitle").textContent=d.course;
+    const entered=d.scores.filter(x=>x!==null);
+    const strokes=entered.reduce((a,b)=>a+b,0);
+    const par=d.pars.reduce(
+      (sum,p,i)=>sum+(d.scores[i]===null?0:p),0
+    );
+    const diff=strokes-par;
+
+    document.getElementById("total").textContent=
+      strokes+" strokes · "+entered.length+
+      " holes · "+(diff>0?"+":"")+diff;
+
+    document.getElementById("holeGrid").innerHTML=
+      d.scores.map((s,i)=>`
+        <div class="hole">
+          <b>Hole ${i+1}</b>
+          <small>Par</small>
+          <input type="number" min="1" max="10"
+            value="${d.pars[i]}"
+            onchange="setPar(${i},this.value)">
+          <small>Strokes</small>
+          <input type="number" min="1" max="30"
+            placeholder="—" value="${s??""}"
+            onchange="setScore(${i},this.value)">
+        </div>
+      `).join("");
+  }
+
+  const list=document.getElementById("historyList");
+  list.replaceChildren();
+
+  if(!rounds.length) {
+    list.textContent="No rounds saved yet.";
+    return;
+  }
+
+  rounds.forEach(r=>{
+    const strokes=r.scores.reduce((a,b)=>a+b,0);
+    const par=r.pars.reduce((a,b)=>a+b,0);
+    const diff=strokes-par;
+
+    const div=document.createElement("div");
+    div.className="round";
+
+    const title=document.createElement("h3");
+    title.textContent=r.course;
+
+    const summary=document.createElement("p");
+    summary.textContent=
+      r.date+" · "+r.scores.length+" holes · "+
+      strokes+" strokes ("+(diff>0?"+":"")+diff+")";
+
+    const details=document.createElement("details");
+    const toggle=document.createElement("summary");
+    toggle.textContent="View scorecard";
+    const scores=document.createElement("p");
+    scores.textContent=r.scores.map((s,i)=>
+      "Hole "+(i+1)+": "+s+" (Par "+r.pars[i]+")"
+    ).join(" · ");
+    details.append(toggle,scores);
+
+    const del=document.createElement("button");
+    del.className="danger";
+    del.textContent="Delete";
+    del.onclick=()=>deleteRound(r.id);
+
+    div.append(title,summary,details,del);
+    list.append(div);
+  });
+}
+
+function exportData() {
+  const blob=new Blob([JSON.stringify(data,null,2)],
+    {type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="fairway-backup.json";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+async function importData(event) {
+  const file=event.target.files[0];
+  if(!file)return;
+  try {
+    const imported=JSON.parse(await file.text());
+    if(!Array.isArray(imported.rounds) ||
+       imported.rounds.some(r=>
+         !r.course || !r.date ||
+         !Array.isArray(r.pars) ||
+         !Array.isArray(r.scores) ||
+         r.pars.length!==r.scores.length ||
+         ![9,18].includes(r.scores.length) ||
+         r.pars.some(p=>!Number.isInteger(p)||p<1||p>10) ||
+         r.scores.some(s=>!Number.isInteger(s)||s<1||s>30)
+       )) throw Error("Invalid backup");
+
+    if(confirm("Replace existing rounds with this backup?")) {
+      data={rounds:imported.rounds,draft:null};
+      save();
+      alert("Backup restored!");
+    }
+  } catch(e) {
+    alert("Invalid backup file.");
+  }
+  event.target.value="";
+}
+
+document.getElementById("date").value=
+  new Date().toLocaleDateString("en-CA");
+render();
+</script>
+</body>
+</html>
