@@ -1,405 +1,584 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#123d2d">
-<title>Fairway Golf</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102b22">
+<title>Fairway — Golf Journal</title>
 <style>
-* {box-sizing:border-box}
-body {
-  margin:0; font-family:Arial,sans-serif;
-  background:#f4f7f3; color:#173b2b;
+:root{font-family:system-ui,-apple-system,sans-serif;color:#ecf2e9;background:#0b2019}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#234c38,#0b2019 65%);min-height:100vh}
+header,main{max-width:720px;margin:auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between}
+h1{font-size:26px;margin:0;letter-spacing:.3px}
+h2{margin:0 0 14px;font-size:23px}
+h3{margin:0 0 12px}
+small,.muted{color:#a5b9a9}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:39px;height:39px;border-radius:12px;background:#d2bd83;display:grid;place-items:center}
+.logo svg{width:25px;height:25px}
+nav{position:sticky;top:0;z-index:3;background:#0d251def;backdrop-filter:blur(12px);display:flex;gap:8px;max-width:720px;margin:auto;padding:10px 20px}
+button{border:0;border-radius:12px;background:#c5ad70;color:#10251c;font-size:15px;font-weight:700;padding:13px 16px;cursor:pointer}
+nav button{flex:1;background:#224335;color:#dceadf}
+nav button.active{background:#c5ad70;color:#112b20}
+.card{background:#17382b;border:1px solid #365745;border-radius:20px;padding:19px;margin:15px 0;box-shadow:0 10px 30px #07140e55}
+.hero{background:linear-gradient(130deg,#315d43,#15382b)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric{padding:13px 8px;background:#244837;border-radius:14px;text-align:center}
+.metric strong{display:block;font-size:24px}
+.metric small{font-size:11px}
+label{display:block;font-size:13px;color:#b5c7b9;margin:14px 0 6px}
+input,select{width:100%;padding:13px;background:#0f2b21;color:#fff;border:1px solid #52715b;border-radius:12px;font-size:16px}
+input:focus,select:focus{outline:2px solid #c5ad70}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.actions button{flex:1}
+.secondary{background:#315641;color:#e4eee5}
+.danger{background:#823e37;color:#fff}
+.hidden{display:none!important}
+.score-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.number{font-size:48px;font-weight:800;line-height:1.1}
+.stepper{display:flex;align-items:center;justify-content:center;gap:26px;margin:20px 0}
+.stepper button{font-size:26px;width:60px;height:60px;padding:0}
+.stepper strong{font-size:56px;min-width:70px;text-align:center}
+.parbuttons{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.parbuttons button{background:#315641;color:#e4eee5;padding:13px 4px}
+.parbuttons button.selected{background:#c5ad70;color:#10251c}
+.holes{display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+.holes button{padding:10px 0;background:#315641;color:#e5eee7;font-size:13px}
+.holes button.selected{background:#c5ad70;color:#10251c}
+.holes button.done{border:1px solid #b6d2a6}
+.course-item,.round-item{padding:14px 0;border-bottom:1px solid #3d5a49}
+.course-item:last-child,.round-item:last-child{border:0}
+.course-item button{margin-top:8px}
+.pill{display:inline-block;background:#305742;border-radius:999px;padding:5px 10px;font-size:12px;color:#d6e5d7}
+.scoretable{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.scoretable td,.scoretable th{padding:8px 5px;text-align:center;border-bottom:1px solid #3d5a49}
+.scoretable td:first-child,.scoretable th:first-child{text-align:left}
+.positive{color:#efc08b}
+.negative{color:#a4e3ae}
+.footer{font-size:12px;color:#a5b9a9;text-align:center;padding:25px 10px}
+details summary{cursor:pointer;padding:10px 0}
+#notice{min-height:20px;color:#efcf85;font-size:13px}
+@media(max-width:410px){
+.holes{grid-template-columns:repeat(5,1fr)}
+.stepper{gap:15px}
+header,main{padding:15px}
 }
-header {
-  background:#123d2d; color:white;
-  padding:24px 18px;
-}
-header h1 {margin:0}
-header p {opacity:.8}
-main {max-width:650px;margin:auto;padding:16px}
-nav {display:flex;gap:8px;margin-top:20px}
-button {
-  background:#19734b;color:white;border:0;
-  border-radius:10px;padding:12px;
-  font-size:15px;cursor:pointer;
-}
-nav button {flex:1;background:#315b47}
-.card {
-  background:white;border-radius:16px;
-  padding:18px;margin:15px 0;
-  box-shadow:0 2px 10px #0000000c;
-}
-input,select {
-  width:100%;padding:12px;margin:7px 0 15px;
-  border:1px solid #ccd8ce;border-radius:9px;
-  font-size:16px;
-}
-label {font-weight:bold;font-size:14px}
-.hidden {display:none}
-.stats {display:flex;gap:10px}
-.stat {
-  flex:1;text-align:center;background:#e7f0e9;
-  padding:15px 5px;border-radius:12px;
-}
-.stat strong {display:block;font-size:24px}
-.stat small {font-size:11px}
-.holes {
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-.hole {
-  background:#edf4ee;border-radius:12px;
-  padding:10px;text-align:center;
-}
-.hole input {text-align:center;margin:5px 0}
-.row {
-  display:flex;justify-content:space-between;
-  align-items:center;gap:10px;
-}
-.round {border-bottom:1px solid #ddd;padding:14px 0}
-.danger {background:#b44842}
-.secondary {background:#dfeae1;color:#174a31}
-.actions {display:flex;gap:8px;flex-wrap:wrap}
-.actions button {flex:1}
-small {color:#66796c}
 </style>
 </head>
 <body>
-
 <header>
-  <h1>⛳ Fairway</h1>
-  <p>Your golf. Your rounds. Your progress.</p>
-  <nav>
-    <button onclick="show('home')">Home</button>
-    <button onclick="show('play')">Play</button>
-    <button onclick="show('history')">History</button>
-  </nav>
+<div class="brand">
+<span class="logo">
+<svg viewBox="0 0 32 32" fill="none" stroke="#153629" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M9 27V4m0 1 16 5-16 6M4 28h20"/>
+</svg>
+</span>
+<div><h1>Fairway</h1><small>YOUR GOLF JOURNAL</small></div>
+</div>
+<span class="pill">v0.2</span>
 </header>
 
+<nav>
+<button data-tab="home" class="active">Home</button>
+<button data-tab="play">Play</button>
+<button data-tab="courses">Courses</button>
+<button data-tab="history">History</button>
+</nav>
+
 <main>
+<div id="notice"></div>
+
 <section id="home">
-  <h2>My Golf Dashboard</h2>
-  <div class="stats">
-    <div class="stat">
-      <strong id="roundCount">0</strong>
-      <small>Rounds</small>
-    </div>
-    <div class="stat">
-      <strong id="best">—</strong>
-      <small>Best vs Par</small>
-    </div>
-    <div class="stat">
-      <strong id="holesPlayed">0</strong>
-      <small>Holes Played</small>
-    </div>
-  </div>
+<div class="card hero">
+<small>WELCOME TO FAIRWAY</small>
+<h2 style="margin-top:8px">Every round tells a story.</h2>
+<p class="muted">Keep every score, every hole, every course — all in one place.</p>
+<button onclick="tab('play')">Start a round →</button>
+</div>
 
-  <div class="card">
-    <h2>Ready to play?</h2>
-    <p>Record your next golf round.</p>
-    <button onclick="show('play')">
-      Start / Resume Round
-    </button>
-  </div>
+<div class="grid">
+<div class="metric"><strong id="nRounds">0</strong><small>Rounds</small></div>
+<div class="metric"><strong id="nHoles">0</strong><small>Holes</small></div>
+<div class="metric"><strong id="nBest">—</strong><small>Best to par</small></div>
+</div>
 
-  <div class="card">
-    <h2>Backup</h2>
-    <p>Keep a copy of your rounds in case you
-    change phones or clear browser data.</p>
-    <div class="actions">
-      <button onclick="exportData()">Export</button>
-      <button class="secondary"
-        onclick="document.getElementById('file').click()">
-        Import
-      </button>
-    </div>
-    <input type="file" id="file" accept=".json"
-      style="display:none" onchange="importData(event)">
-  </div>
+<div class="card">
+<h3>Your data</h3>
+<p class="muted">Rounds are saved on this device. Export backups regularly; clearing site data may erase them.</p>
+<div class="actions">
+<button onclick="exportBackup()">Export backup</button>
+<button class="secondary" onclick="document.getElementById('backup').click()">Import backup</button>
+</div>
+<input id="backup" type="file" accept=".json,application/json" hidden onchange="importBackup(event)">
+</div>
+</section>
+
+<section id="courses" class="hidden">
+<h2>My courses</h2>
+<div class="card">
+<h3>Add a course</h3>
+<label>Course name</label>
+<input id="courseName" placeholder="e.g. Golf Meggen">
+<label>Tees</label>
+<input id="courseTees" placeholder="e.g. Yellow">
+<label>Number of holes</label>
+<select id="courseHoles">
+<option value="9">9</option>
+<option value="18">18</option>
+</select>
+<label>Course Rating (optional)</label>
+<input id="courseCR" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 35.7">
+<label>Slope Rating (optional)</label>
+<input id="courseSlope" type="number" inputmode="numeric" placeholder="e.g. 138">
+<label>Hole pars (comma-separated, optional)</label>
+<input id="coursePars" inputmode="numeric" placeholder="e.g. 3,4,3,4,5,3,4,3,4">
+<small>You can adjust each hole's par with buttons during a round. Course pars can be edited by saving a new layout.</small>
+<p><button onclick="addCourse()">Save course</button></p>
+</div>
+<div class="card">
+<h3>Saved courses</h3>
+<div id="courseList"></div>
+</div>
 </section>
 
 <section id="play" class="hidden">
-  <h2>My Scorecard</h2>
+<h2>Play a round</h2>
+<div id="setup" class="card">
+<label>Select a saved course</label>
+<select id="courseSelect"></select>
+<label>Date</label>
+<input id="roundDate" type="date">
+<p><button onclick="startRound()">Start scorecard →</button></p>
+<small>Set up your courses in the Courses tab first.</small>
+</div>
 
-  <div id="setup" class="card">
-    <h3>New Round</h3>
+<div id="playing" class="hidden">
+<div class="card">
+<div class="score-top">
+<div>
+<small id="activeCourse"></small>
+<h2 id="activeHole" style="margin:5px 0"></h2>
+<span id="activeProgress" class="pill"></span>
+</div>
+<div style="text-align:right">
+<small>ROUND TOTAL</small>
+<div class="number" id="activeTotal">0</div>
+<small id="activeDiff">Even</small>
+</div>
+</div>
+<div class="holes" id="holeNav" style="margin-top:20px"></div>
+</div>
 
-    <label>Golf Course</label>
-    <input id="course" placeholder="Golf Meggen">
+<div class="card">
+<h3>Hole par</h3>
+<div class="parbuttons" id="parButtons"></div>
+<label style="text-align:center">STROKES</label>
+<div class="stepper">
+<button class="secondary" onclick="changeStrokes(-1)">−</button>
+<strong id="strokesNumber">—</strong>
+<button onclick="changeStrokes(1)">+</button>
+</div>
+<p class="muted" id="holeStatus" style="text-align:center"></p>
+<div class="actions">
+<button class="secondary" onclick="moveHole(-1)">← Previous</button>
+<button onclick="moveHole(1)">Next →</button>
+</div>
+</div>
 
-    <label>Date</label>
-    <input id="date" type="date">
-
-    <label>Holes</label>
-    <select id="count">
-      <option value="9">9 holes</option>
-      <option value="18">18 holes</option>
-    </select>
-
-    <label>Par of each hole</label>
-    <input id="pars"
-      placeholder="Example: 3,4,3,5,4,3,4,3,4">
-    <small>
-      Separate pars with commas.
-      Leave empty to use par 3 for every hole.
-    </small>
-
-    <p><button onclick="startRound()">
-      Create Scorecard
-    </button></p>
-  </div>
-
-  <div id="active" class="card hidden">
-    <h3 id="roundTitle"></h3>
-    <h2 id="total"></h2>
-    <div class="holes" id="holeGrid"></div>
-    <p><small>Scores save automatically.</small></p>
-    <div class="actions">
-      <button onclick="finishRound()">Finish Round</button>
-      <button class="danger" onclick="discard()">
-        Discard
-      </button>
-    </div>
-  </div>
+<div class="card">
+<div class="actions">
+<button onclick="finishRound()">Finish round</button>
+<button class="danger" onclick="discardRound()">Discard</button>
+</div>
+<p class="muted">Your unfinished round saves automatically.</p>
+</div>
+</div>
 </section>
 
 <section id="history" class="hidden">
-  <h2>Round History</h2>
-  <div class="card" id="historyList"></div>
+<h2>Round history</h2>
+<div class="card" id="historyList"></div>
 </section>
+
+<div class="footer">FAIRWAY · BUILT FOR THE LOVE OF GOLF</div>
 </main>
 
 <script>
-const KEY = "fairway-data-v1";
+const KEY='fairway-data-v2';
+const OLD='fairway-data-v1';
+let db=load(),selectedHole=0,currentTab='home';
 
-let data = load();
-
-function load() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEY));
-    if (saved && Array.isArray(saved.rounds)) return saved;
-  } catch(e) {}
-  return {rounds:[], draft:null};
+function validRound(r){
+ return r&&typeof r.course==='string'&&typeof r.date==='string'&&
+ Array.isArray(r.pars)&&Array.isArray(r.scores)&&
+ [9,18].includes(r.pars.length)&&r.pars.length===r.scores.length&&
+ r.pars.every(p=>Number.isInteger(p)&&p>=1&&p<=10)&&
+ r.scores.every(s=>s===null||(Number.isInteger(s)&&s>=1&&s<=30));
 }
 
-function save() {
-  localStorage.setItem(KEY,JSON.stringify(data));
-  render();
+function load(){
+ let d;
+ try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ if(d&&Array.isArray(d.rounds)&&Array.isArray(d.courses))return d;
+ let old;
+ try{old=JSON.parse(localStorage.getItem(OLD))}catch(e){}
+ return{
+  rounds:Array.isArray(old?.rounds)?old.rounds.filter(validRound):[],
+  draft:validRound(old?.draft)?old.draft:null,
+  courses:[]
+ };
 }
 
-function show(page) {
-  ["home","play","history"].forEach(id => {
-    document.getElementById(id).classList.toggle(
-      "hidden",id!==page
-    );
-  });
-  render();
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(db));
+ }catch(e){
+  alert('Unable to save on this device. Export a backup.');
+ }
+ render();
 }
 
-function startRound() {
-  const course = document.getElementById("course").value.trim();
-  const date = document.getElementById("date").value;
-  const n = Number(document.getElementById("count").value);
-  const raw = document.getElementById("pars").value.trim();
+function note(s){
+ document.getElementById('notice').textContent=s;
+}
 
-  if (!course || !date) {
-    alert("Please enter a course and date.");
-    return;
-  }
+function tab(t){
+ currentTab=t;
+ document.querySelectorAll('main section').forEach(x=>
+  x.classList.toggle('hidden',x.id!==t));
+ document.querySelectorAll('nav button').forEach(b=>
+  b.classList.toggle('active',b.dataset.tab===t));
+ render();
+}
 
-  const pars = raw
-    ? raw.split(",").map(x=>Number(x.trim()))
-    : Array(n).fill(3);
+document.querySelectorAll('nav button').forEach(b=>
+ b.onclick=()=>tab(b.dataset.tab));
 
-  if (pars.length!==n ||
-      pars.some(p=>!Number.isInteger(p)||p<1||p>10)) {
-    alert("Please enter valid pars for all holes.");
-    return;
-  }
+function readPars(raw,n){
+ if(!raw.trim())return Array(n).fill(3);
+ let p=raw.split(',').map(x=>Number(x.trim()));
+ return p.length===n&&p.every(x=>Number.isInteger(x)&&x>=1&&x<=10)?p:null;
+}
 
-  data.draft = {
-    id:Date.now(),course,date,pars,
-    scores:Array(n).fill(null)
-  };
+function addCourse(){
+ let name=document.getElementById('courseName').value.trim(),
+ tees=document.getElementById('courseTees').value.trim()||'Standard',
+ n=+document.getElementById('courseHoles').value,
+ pars=readPars(document.getElementById('coursePars').value,n),
+ crRaw=document.getElementById('courseCR').value,
+ slopeRaw=document.getElementById('courseSlope').value,
+ cr=crRaw===''?null:Number(crRaw),
+ slope=slopeRaw===''?null:Number(slopeRaw);
+
+ if(!name||!pars||
+  cr!==null&&(!Number.isFinite(cr)||cr<=0)||
+  slope!==null&&(!Number.isInteger(slope)||slope<55||slope>155)){
+  alert('Check the course name, pars, Course Rating and Slope.');
+  return;
+ }
+ db.courses.push({id:crypto.randomUUID(),name,tees,pars,cr,slope});
+ save();
+ note('Course saved.');
+ document.getElementById('courseName').value='';
+ document.getElementById('coursePars').value='';
+}
+
+function removeCourse(id){
+ if(confirm('Remove this saved course? Existing rounds will stay saved.')){
+  db.courses=db.courses.filter(c=>c.id!==id);
   save();
+ }
 }
 
-function setScore(i,value) {
-  const score = value==="" ? null : Number(value);
-  if (score!==null &&
-      (!Number.isInteger(score)||score<1||score>30)) {
-    alert("Enter a score between 1 and 30.");
-    return;
-  }
-  data.draft.scores[i]=score;
+function startRound(){
+ if(db.draft){
+  alert('Finish or discard the active round first.');
+  return;
+ }
+ let c=db.courses.find(c=>
+  c.id===document.getElementById('courseSelect').value);
+ if(!c){
+  alert('Please add a course first.');
+  tab('courses');
+  return;
+ }
+ db.draft={
+  id:crypto.randomUUID(),
+  course:c.name,
+  tees:c.tees,
+  date:document.getElementById('roundDate').value||
+   new Date().toLocaleDateString('en-CA'),
+  pars:[...c.pars],
+  scores:Array(c.pars.length).fill(null),
+  cr:c.cr,
+  slope:c.slope
+ };
+ selectedHole=0;
+ save();
+}
+
+function changeStrokes(delta){
+ let d=db.draft;
+ if(!d)return;
+ let current=d.scores[selectedHole];
+ d.scores[selectedHole]=Math.min(30,
+  Math.max(1,(current===null?0:current)+delta));
+ save();
+}
+
+function setPar(p){
+ if(!db.draft)return;
+ db.draft.pars[selectedHole]=p;
+ save();
+}
+
+function moveHole(delta){
+ if(!db.draft)return;
+ selectedHole=Math.max(0,
+  Math.min(db.draft.pars.length-1,selectedHole+delta));
+ render();
+}
+
+function goHole(i){
+ selectedHole=i;
+ render();
+}
+
+function finishRound(){
+ let d=db.draft;
+ if(!d)return;
+ if(d.scores.some(x=>x===null)){
+  alert('Please score every hole before finishing.');
+  return;
+ }
+ db.rounds.unshift(d);
+ db.draft=null;
+ save();
+ tab('history');
+ note('Round saved!');
+}
+
+function discardRound(){
+ if(confirm('Discard this unfinished round?')){
+  db.draft=null;
   save();
+ }
 }
 
-function setPar(i,value) {
-  const par=Number(value);
-  if (!Number.isInteger(par)||par<1||par>10) return;
-  data.draft.pars[i]=par;
+function deleteRound(id){
+ if(confirm('Permanently delete this round?')){
+  db.rounds=db.rounds.filter(r=>String(r.id)!==String(id));
   save();
+ }
 }
 
-function finishRound() {
-  if (data.draft.scores.some(s=>s===null)) {
-    alert("Please complete all holes first.");
-    return;
-  }
-  data.rounds.unshift(data.draft);
-  data.draft=null;
-  save();
-  show("history");
+function scoreDiff(r){
+ return r.scores.reduce((a,b)=>a+(b||0),0)-
+ r.pars.reduce((a,b,i)=>a+(r.scores[i]===null?0:b),0);
 }
 
-function discard() {
-  if(confirm("Discard this unfinished round?")) {
-    data.draft=null;
-    save();
-  }
+function signed(n){
+ return n===0?'E':n>0?'+'+n:String(n);
 }
 
-function deleteRound(id) {
-  if(confirm("Delete this round?")) {
-    data.rounds=data.rounds.filter(r=>r.id!==id);
-    save();
-  }
+function node(tag,text,cls){
+ let e=document.createElement(tag);
+ if(text!==undefined)e.textContent=text;
+ if(cls)e.className=cls;
+ return e;
 }
 
-function render() {
-  const rounds=data.rounds;
-  document.getElementById("roundCount").textContent=rounds.length;
-  document.getElementById("holesPlayed").textContent=
-    rounds.reduce((sum,r)=>sum+r.scores.length,0);
+function render(){
+ let valid=db.rounds.filter(r=>
+  validRound(r)&&r.scores.every(s=>s!==null));
 
-  const diffs=rounds.map(r=>
-    r.scores.reduce((a,b)=>a+b,0)-
-    r.pars.reduce((a,b)=>a+b,0)
+ document.getElementById('nRounds').textContent=valid.length;
+ document.getElementById('nHoles').textContent=
+  valid.reduce((a,r)=>a+r.scores.length,0);
+ document.getElementById('nBest').textContent=
+  valid.length?signed(Math.min(...valid.map(scoreDiff))):'—';
+
+ let list=document.getElementById('courseList');
+ list.replaceChildren();
+ if(!db.courses.length)
+  list.append(node('p','No courses saved yet.','muted'));
+
+ db.courses.forEach(c=>{
+  let wrap=node('div',undefined,'course-item');
+  wrap.append(
+   node('strong',c.name+' · '+c.tees),
+   node('p',c.pars.length+' holes · Par '+
+    c.pars.reduce((a,b)=>a+b,0)+
+    ' · CR '+(c.cr??'—')+
+    ' · Slope '+(c.slope??'—'),'muted')
   );
-  const best=diffs.length?Math.min(...diffs):null;
-  document.getElementById("best").textContent=
-    best===null?"—":(best>0?"+":"")+best;
+  let btn=node('button','Remove','danger');
+  btn.onclick=()=>removeCourse(c.id);
+  wrap.append(btn);
+  list.append(wrap);
+ });
 
-  const d=data.draft;
-  document.getElementById("setup").classList.toggle("hidden",!!d);
-  document.getElementById("active").classList.toggle("hidden",!d);
+ let select=document.getElementById('courseSelect'),
+ before=select.value;
+ select.replaceChildren();
 
-  if(d) {
-    document.getElementById("roundTitle").textContent=d.course;
-    const entered=d.scores.filter(x=>x!==null);
-    const strokes=entered.reduce((a,b)=>a+b,0);
-    const par=d.pars.reduce(
-      (sum,p,i)=>sum+(d.scores[i]===null?0:p),0
-    );
-    const diff=strokes-par;
+ db.courses.forEach(c=>{
+  let o=node('option',c.name+' · '+c.tees+
+   ' ('+c.pars.length+' holes)');
+  o.value=c.id;
+  select.append(o);
+ });
+ if(db.courses.some(c=>c.id===before))select.value=before;
 
-    document.getElementById("total").textContent=
-      strokes+" strokes · "+entered.length+
-      " holes · "+(diff>0?"+":"")+diff;
+ document.getElementById('setup').classList.toggle(
+  'hidden',!!db.draft);
+ document.getElementById('playing').classList.toggle(
+  'hidden',!db.draft);
 
-    document.getElementById("holeGrid").innerHTML=
-      d.scores.map((s,i)=>`
-        <div class="hole">
-          <b>Hole ${i+1}</b>
-          <small>Par</small>
-          <input type="number" min="1" max="10"
-            value="${d.pars[i]}"
-            onchange="setPar(${i},this.value)">
-          <small>Strokes</small>
-          <input type="number" min="1" max="30"
-            placeholder="—" value="${s??""}"
-            onchange="setScore(${i},this.value)">
-        </div>
-      `).join("");
-  }
+ if(db.draft){
+  let d=db.draft;
+  selectedHole=Math.min(selectedHole,d.pars.length-1);
+  document.getElementById('activeCourse').textContent=
+   d.course+' · '+(d.tees||'Standard');
+  document.getElementById('activeHole').textContent=
+   'Hole '+(selectedHole+1);
 
-  const list=document.getElementById("historyList");
-  list.replaceChildren();
+  let completed=d.scores.filter(s=>s!==null).length;
+  document.getElementById('activeProgress').textContent=
+   completed+'/'+d.scores.length+' holes scored';
+  document.getElementById('activeTotal').textContent=
+   d.scores.reduce((a,b)=>a+(b||0),0);
+  document.getElementById('activeDiff').textContent=
+   signed(scoreDiff(d))+' to par';
 
-  if(!rounds.length) {
-    list.textContent="No rounds saved yet.";
-    return;
-  }
-
-  rounds.forEach(r=>{
-    const strokes=r.scores.reduce((a,b)=>a+b,0);
-    const par=r.pars.reduce((a,b)=>a+b,0);
-    const diff=strokes-par;
-
-    const div=document.createElement("div");
-    div.className="round";
-
-    const title=document.createElement("h3");
-    title.textContent=r.course;
-
-    const summary=document.createElement("p");
-    summary.textContent=
-      r.date+" · "+r.scores.length+" holes · "+
-      strokes+" strokes ("+(diff>0?"+":"")+diff+")";
-
-    const details=document.createElement("details");
-    const toggle=document.createElement("summary");
-    toggle.textContent="View scorecard";
-    const scores=document.createElement("p");
-    scores.textContent=r.scores.map((s,i)=>
-      "Hole "+(i+1)+": "+s+" (Par "+r.pars[i]+")"
-    ).join(" · ");
-    details.append(toggle,scores);
-
-    const del=document.createElement("button");
-    del.className="danger";
-    del.textContent="Delete";
-    del.onclick=()=>deleteRound(r.id);
-
-    div.append(title,summary,details,del);
-    list.append(div);
+  let nav=document.getElementById('holeNav');
+  nav.replaceChildren();
+  d.scores.forEach((s,i)=>{
+   let b=node('button',String(i+1));
+   if(i===selectedHole)b.classList.add('selected');
+   if(s!==null)b.classList.add('done');
+   b.onclick=()=>goHole(i);
+   nav.append(b);
   });
+
+  let pars=document.getElementById('parButtons');
+  pars.replaceChildren();
+  [3,4,5,6].forEach(p=>{
+   let b=node('button','Par '+p);
+   if(d.pars[selectedHole]===p)b.classList.add('selected');
+   b.onclick=()=>setPar(p);
+   pars.append(b);
+  });
+
+  document.getElementById('strokesNumber').textContent=
+   d.scores[selectedHole]??'—';
+  document.getElementById('holeStatus').textContent=
+   d.scores[selectedHole]===null?
+   'Tap + to enter strokes':
+   signed(d.scores[selectedHole]-d.pars[selectedHole])+
+   ' on this hole';
+ }
+
+ let hist=document.getElementById('historyList');
+ hist.replaceChildren();
+ if(!valid.length)
+  hist.append(node('p','No completed rounds yet.','muted'));
+
+ valid.forEach(r=>{
+  let div=node('div',undefined,'round-item'),
+  h=node('h3',r.course),
+  info=node('p',
+   r.date+' · '+r.scores.length+' holes · '+
+   r.scores.reduce((a,b)=>a+b,0)+' strokes ('+
+   signed(scoreDiff(r))+')','muted'),
+  details=document.createElement('details'),
+  summary=node('summary','View scorecard'),
+  table=document.createElement('table');
+
+  table.className='scoretable';
+  let head=document.createElement('tr');
+  ['Hole','Par','Strokes','+/-'].forEach(x=>
+   head.append(node('th',x)));
+  table.append(head);
+
+  r.scores.forEach((s,i)=>{
+   let tr=document.createElement('tr');
+   [i+1,r.pars[i],s,signed(s-r.pars[i])].forEach((v,j)=>{
+    let td=node('td',String(v));
+    if(j===3)
+     td.className=s-r.pars[i]>0?'positive':
+      s-r.pars[i]<0?'negative':'';
+    tr.append(td);
+   });
+   table.append(tr);
+  });
+
+  details.append(summary,table);
+  let meta=node('p',
+   'Tees: '+(r.tees||'—')+
+   ' · CR: '+(r.cr??'—')+
+   ' · Slope: '+(r.slope??'—'),'muted'),
+  del=node('button','Delete round','danger');
+
+  del.onclick=()=>deleteRound(r.id);
+  div.append(h,info,details,meta,del);
+  hist.append(div);
+ });
 }
 
-function exportData() {
-  const blob=new Blob([JSON.stringify(data,null,2)],
-    {type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="fairway-backup.json";
-  a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
+function exportBackup(){
+ let blob=new Blob([JSON.stringify(db,null,2)],
+  {type:'application/json'}),
+ url=URL.createObjectURL(blob),
+ a=document.createElement('a');
+ a.href=url;
+ a.download='fairway-backup-'+
+  new Date().toLocaleDateString('en-CA')+'.json';
+ a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 
-async function importData(event) {
-  const file=event.target.files[0];
-  if(!file)return;
-  try {
-    const imported=JSON.parse(await file.text());
-    if(!Array.isArray(imported.rounds) ||
-       imported.rounds.some(r=>
-         !r.course || !r.date ||
-         !Array.isArray(r.pars) ||
-         !Array.isArray(r.scores) ||
-         r.pars.length!==r.scores.length ||
-         ![9,18].includes(r.scores.length) ||
-         r.pars.some(p=>!Number.isInteger(p)||p<1||p>10) ||
-         r.scores.some(s=>!Number.isInteger(s)||s<1||s>30)
-       )) throw Error("Invalid backup");
+async function importBackup(ev){
+ let f=ev.target.files?.[0];
+ if(!f)return;
+ try{
+  let d=JSON.parse(await f.text());
+  if(!Array.isArray(d.rounds)||
+   d.rounds.some(r=>!validRound(r))||
+   d.rounds.some(r=>r.scores.includes(null))||
+   d.courses!==undefined&&
+   (!Array.isArray(d.courses)||
+    d.courses.some(c=>
+     !c||typeof c.name!=='string'||
+     !Array.isArray(c.pars)||
+     ![9,18].includes(c.pars.length)||
+     c.pars.some(p=>
+      !Number.isInteger(p)||p<1||p>10)
+    )
+   )
+  )throw Error('Invalid backup');
 
-    if(confirm("Replace existing rounds with this backup?")) {
-      data={rounds:imported.rounds,draft:null};
-      save();
-      alert("Backup restored!");
-    }
-  } catch(e) {
-    alert("Invalid backup file.");
+  if(confirm('Replace all local rounds and courses with this backup?')){
+   db={
+    rounds:d.rounds,
+    courses:d.courses||[],
+    draft:validRound(d.draft)?d.draft:null
+   };
+   save();
+   note('Backup restored.');
   }
-  event.target.value="";
+ }catch(e){
+  alert('Invalid backup file.');
+ }
+ ev.target.value='';
 }
 
-document.getElementById("date").value=
-  new Date().toLocaleDateString("en-CA");
-render();
+document.getElementById('roundDate').value=
+ new Date().toLocaleDateString('en-CA');
+save();
 </script>
 </body>
 </html>
