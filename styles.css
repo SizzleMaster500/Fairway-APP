@@ -1,0 +1,124 @@
+/* Fairway v0.9.8 — original v0.9.7 styling, unchanged. */
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f1f4ec;background:#0b2119;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#214936 0,#0b2119 64%)}header,main{max-width:720px;margin:auto;padding:18px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:max(18px,env(safe-area-inset-top))}.brand{display:flex;align-items:center;gap:12px}.logo{height:55px;width:55px;flex:none;border-radius:16px;background:linear-gradient(145deg,#3b6547,#102b21);display:grid;place-items:center;box-shadow:inset 0 0 0 1px #70926a}.logo svg{width:45px;height:45px}h1{margin:0;font-size:28px;letter-spacing:.3px}h2{margin:0 0 15px;font-size:23px}h3{margin:0 0 12px}p{line-height:1.5}.muted,small{color:#afc4b4}small{font-size:12px}.pill{display:inline-block;border-radius:30px;padding:7px 11px;background:#315a43;color:#e2eadd;font-size:12px;white-space:nowrap}nav{position:sticky;top:0;z-index:5;display:flex;gap:7px;max-width:720px;margin:auto;padding:10px 18px;background:#0b2119ef;backdrop-filter:blur(10px)}button{font:inherit;font-size:15px;font-weight:700;cursor:pointer;background:#d0b578;color:#10251c;border:0;border-radius:13px;padding:13px 16px;touch-action:manipulation}nav button{flex:1;min-width:0;padding:13px 4px;background:#254b38;color:#e8efe7}nav button.active{background:#d0b578;color:#10251c}.card{background:#17392b;border:1px solid #355b44;border-radius:21px;padding:18px;margin:15px 0;box-shadow:0 12px 28px #04150c35}.hero{background:linear-gradient(125deg,#315b43,#16382b)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.metric{padding:14px 4px;background:#254b39;border-radius:13px;text-align:center}.metric strong{font-size:25px;display:block}.metric small{font-size:11px}label{display:block;margin:14px 0 7px;color:#c1d1c3;font-size:13px}input,select{display:block;width:100%;max-width:100%;min-width:0;min-height:49px;padding:12px;background:#0d291f;border:1px solid #52735d;border-radius:12px;color:#f4f5f0;font:inherit;font-size:16px;-webkit-appearance:none;appearance:none}input[type=date]{width:100%;display:block;-webkit-appearance:none;appearance:none}input:focus,select:focus{outline:2px solid #d0b578;outline-offset:1px}select{background-image:linear-gradient(45deg,transparent 50%,#c3d5c6 50%),linear-gradient(135deg,#c3d5c6 50%,transparent 50%);background-position:calc(100% - 19px) 22px,calc(100% - 13px) 22px;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}.hidden{display:none!important}.actions{display:flex;flex-wrap:wrap;gap:9px}.actions button{flex:1}.secondary{background:#315c44;color:#f2f4eb}.danger{background:#8d423e;color:#fff}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.pargrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;margin-top:14px}.parcell{min-width:0;text-align:center}.parcell>small{display:block;margin-bottom:5px}.parctrl{border:1px solid #477059;background:#102d22;border-radius:11px;overflow:hidden;display:flex;flex-direction:column;align-items:stretch}.parctrl button{padding:5px 0;border-radius:0;background:transparent;color:#d8e8d8;font-size:13px;min-height:30px}.parctrl strong{font-size:19px;padding:2px 0}.totalpar{display:flex;justify-content:space-between;align-items:center;padding:14px;margin-top:13px;border:1px solid #365b45;border-radius:13px;background:#123327}.totalpar strong{font-size:28px}.course-item,.round-item{padding:14px 0;border-bottom:1px solid #3c5a48}.course-item:last-child,.round-item:last-child{border:0}.course-item button,.round-item button{margin-top:6px}.score-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.number{font-size:46px;font-weight:800}.holes{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;margin-top:18px}.holes button{padding:10px 0;font-size:13px;background:#315a44;color:#fff}.holes button.selected{background:#d0b578;color:#11291e}.holes button.done{border:1px solid #b6d2a6}.parbuttons{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.parbuttons button{background:#315a44;color:#fff;padding:12px 3px}.parbuttons button.selected{background:#d0b578;color:#10251c}.stepper{display:flex;align-items:center;justify-content:center;gap:22px;margin:20px 0}.stepper button{height:62px;width:62px;font-size:27px;padding:0}.stepper strong{font-size:52px;min-width:68px;text-align:center}.scoretable{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}.scoretable th,.scoretable td{padding:8px 5px;text-align:center;border-bottom:1px solid #3d5a49}.scoretable th:first-child,.scoretable td:first-child{text-align:left}.positive{color:#f0c28d}.negative{color:#a4e3ae}.footer{text-align:center;color:#a5b9a9;font-size:12px;padding:26px 0}details summary{cursor:pointer;padding:10px 0}#notice{min-height:20px;color:#f0d08b;font-size:13px}@media(max-width:480px){.pargrid{grid-template-columns:repeat(5,minmax(0,1fr))}.holes{grid-template-columns:repeat(5,minmax(0,1fr))}header,main{padding-left:15px;padding-right:15px}nav{padding-left:15px;padding-right:15px}h1{font-size:25px}}
+
+/* Fairway v0.4: atmospheric, lightweight SVG landscape */
+header{position:relative;isolation:isolate;min-height:112px}
+header::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#0b2119a8,#0b21194d),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20900%20230%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22sky%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%231d4937%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b241b%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20fill%3D%22url%28%23sky%29%22%20d%3D%22M0%200h900v230H0z%22%2F%3E%3Cg%20fill%3D%22%2309271e%22%20opacity%3D%22.72%22%3E%3Cpath%20d%3D%22M0%20170l22-66%2022%2066h-12l16%2023H0zm65%204%2027-94%2028%2094h-14l18%2022H51zm105-3%2021-70%2022%2070h-12l15%2025h-51zm575-6%2025-85%2026%2085h-13l18%2030h-67zm91%207%2023-76%2024%2076h-12l19%2025h-66z%22%2F%3E%3Cpath%20d%3D%22M0%20184%2034%20145%2066%20185%20105%20143%20139%20189%20184%20152%20224%20196%20277%20166%20326%20194%20389%20169%20449%20194%20510%20170%20559%20197%20617%20151%20668%20188%20722%20145%20768%20187%20819%20148%20900%20184v46H0z%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M0%20212Q210%20160%20405%20199T900%20186V230H0Z%22%20fill%3D%22%2325543a%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M0%20224Q260%20185%20460%20211T900%20204V230H0Z%22%20fill%3D%22%233b6a43%22%20opacity%3D%22.75%22%2F%3E%3C%2Fsvg%3E") center center/cover no-repeat;border-radius:0 0 18px 18px;pointer-events:none}
+.par-display{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#103023;border:1px solid #477059;border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.par-display strong{font-size:25px;color:#e6c985}
+
+/* Fairway v0.6: independent round cards and live achievements */
+.par-display{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.hole-indicator,.par-indicator{display:flex;flex-direction:column;gap:5px}
+.par-indicator{text-align:right}
+.par-display .hole-indicator small,.par-display .par-indicator small{font-size:11px;letter-spacing:.08em;color:#b4c8b8}
+.par-display .hole-indicator strong{font-size:24px;color:#f4f5ed}
+.par-display .par-indicator strong{font-size:25px;color:#d0b578}
+.round-item{padding:19px 0}
+.round-summary{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.round-summary-left{flex:1;min-width:0}
+.round-date{font-size:12px;letter-spacing:.045em;color:#d0b578;margin-bottom:9px}
+.round-summary h3{font-size:21px;line-height:1.2;margin:0 0 10px;overflow-wrap:anywhere}
+.round-tee{font-size:13px;color:#b5c9b9}
+.round-summary-right{flex:none;min-width:92px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.round-summary-right small{font-size:10px;letter-spacing:.06em;text-align:right}
+.round-score{font-size:54px;line-height:1;font-variant-numeric:tabular-nums;color:#fff}
+.round-diff{border-radius:100px;padding:5px 12px;background:#315640;color:#f0cb8c;font-size:15px;font-weight:750;font-variant-numeric:tabular-nums}
+.round-item details{margin-top:18px;border-top:1px solid #42614e;padding-top:7px}
+.round-item details summary{font-weight:650;color:#f1f4ed}
+.round-item>p.muted{font-size:13px}
+
+.tee-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:#315640;color:#e9f0e9;font-size:12px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.tee-badge::before{content:"";display:inline-block;width:9px;height:12px;background:currentColor;clip-path:polygon(0 0,100% 24%,0 55%);border-left:2px solid currentColor}
+.tee-yellow{background:#e6bd48;color:#1b291e}.tee-white{background:#f0f1e9;color:#1b3025}.tee-blue{background:#377dd1;color:#fff}.tee-red{background:#cb514c;color:#fff}
+.course-title-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#activeTeeBadge{margin-top:5px}
+
+/* Each round is its own card, rather than a row inside one big card. */
+#historyList{display:grid;gap:15px;margin-top:12px}
+#historyList .round-item{margin:0;padding:20px;border:1px solid #42654e;border-radius:21px;background:#17392b;box-shadow:0 12px 28px #04150c35}
+#historyList .round-item:last-child{border:1px solid #42654e}
+#historyList .round-item details{margin-top:17px}
+#historyList .round-item .danger{margin-top:10px}
+.award-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.award-card{background:linear-gradient(145deg,#1d4734,#15372a);border:1px solid #45674f;border-radius:19px;padding:18px;text-align:center;min-width:0}
+.award-emoji{font-size:31px;line-height:1.5}
+.award-count{font-size:43px;font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums}
+.award-title{font-weight:750;font-size:15px}
+.award-desc{font-size:12px;color:#afc4b4;margin-top:5px}
+.milestone-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #3c5a48}
+.milestone-row:last-child{border-bottom:0}
+.milestone-row strong{color:#e6c985;font-variant-numeric:tabular-nums;text-align:right}
+@media(max-width:480px){nav{gap:5px}nav button{font-size:12px;padding:12px 1px}.round-score{font-size:48px}.round-summary{gap:8px}.round-summary-right{min-width:76px}}
+/* Fairway v0.7: premium saved course cards and round editing */
+#courseList{display:grid;gap:15px;margin-top:14px}
+#courseList .course-item{margin:0;padding:19px;border:1px solid #42654e;border-radius:21px;background:#17392b;box-shadow:0 12px 28px #04150c35}
+#courseList .course-item:last-child{border:1px solid #42654e}
+.saved-course-head{padding-bottom:14px}
+.saved-course-head h3{font-size:23px;line-height:1.2;overflow-wrap:anywhere;margin:0 0 12px;color:#fff}
+.saved-course-subtitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.saved-course-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid #42614e;padding-top:15px}
+.saved-course-stat{background:#254735;border-radius:12px;padding:12px 5px;text-align:center;min-width:0}
+.saved-course-stat small{display:block;font-size:9px;letter-spacing:.04em;min-height:26px}
+.saved-course-stat strong{display:block;font-size:23px;font-variant-numeric:tabular-nums;color:#fff}
+.course-item details{border-top:1px solid #42614e;margin-top:16px;padding-top:6px}
+.course-item details summary{font-weight:650}
+.saved-par-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:9px 0 12px}
+.saved-par-hole{background:#254735;border-radius:11px;text-align:center;padding:10px 4px}
+.saved-par-hole small{display:block;margin-bottom:4px}
+.saved-par-hole strong{font-size:15px}
+#courseList .course-item>.danger{margin-top:13px}
+.edit-hole-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #42614e;padding:12px 0}
+.edit-hole-info{display:flex;flex-direction:column;gap:4px}.edit-hole-info small{font-size:12px}
+.edit-hole-controls{display:flex;align-items:center;gap:13px}
+.edit-hole-controls button{width:43px;height:43px;padding:0;font-size:24px}
+.edit-hole-controls button:disabled{opacity:.4;cursor:not-allowed}
+.edit-hole-controls strong{min-width:24px;text-align:center;font-size:21px;font-variant-numeric:tabular-nums}
+
+/* Fairway v0.8: welcoming home dashboard and thumb-friendly navigation */
+body{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;max-width:720px;margin:0 auto;z-index:30;padding:8px max(10px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-right));gap:5px;background:#10281ff7;border-top:1px solid #3e6249;box-shadow:0 -10px 28px #03160d88}
+nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;padding:5px 1px;border-radius:12px;font-size:11px;font-weight:700;background:transparent;color:#b9c9bd}
+nav button.active{background:#315b43;color:#f2d58a}
+nav .nav-icon{font-size:22px;line-height:1.1;font-weight:700}
+.home-hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#305e43,#16372a 70%);padding:24px 21px}
+.home-hero:after{content:'⚑';position:absolute;right:10px;top:8px;color:#ffffff0c;font-size:155px;transform:rotate(-12deg);pointer-events:none}
+.home-hero .eyebrow,.featured-award .eyebrow{color:#e8cc83;font-size:11px;letter-spacing:.09em;font-weight:800}
+.home-hero h2{font-size:clamp(28px,7vw,37px);line-height:1.08;max-width:350px;margin:14px 0 12px;letter-spacing:-.03em}
+.home-hero p{color:#c8ddcc;max-width:370px;margin:0 0 22px;font-size:14px}
+.hero-cta{width:100%;min-height:52px;position:relative;z-index:1;display:flex;justify-content:center;align-items:center;gap:6px}
+.hero-cta span{margin-left:auto}
+.featured-award{background:linear-gradient(130deg,#244c37,#183d2c);border-color:#657049}
+.featured-content{display:flex;align-items:center;gap:15px;margin:17px 0 8px}
+.featured-emoji{width:68px;height:68px;display:grid;place-items:center;background:#375b42;border-radius:18px;font-size:35px;flex:none}
+.featured-content h3{font-size:22px;line-height:1.15;margin:0 0 7px}
+.featured-content p{color:#bed1c1;font-size:13px;margin:0}
+.text-action{background:transparent;color:#e6c67d;padding:8px 0;text-align:left;font-size:13px}
+.journey-heading{margin:26px 2px 12px}.journey-heading h3{margin:0;font-size:20px}.journey-heading small{font-size:10px;letter-spacing:.05em}
+.home-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.home-stat{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;padding:17px;background:#1b4130;border:1px solid #375b45;border-radius:18px}
+.home-stat .stat-icon{font-size:21px;color:#e2c478}.home-stat strong{font-size:31px;line-height:1.1;font-variant-numeric:tabular-nums}.home-stat small{font-size:12px;color:#bcd0c0}
+.latest-round .section-head h3,.data-card .section-head h3{margin:0}.latest-round .pill{font-size:9px}.latest-score-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}.latest-score-row h3{font-size:20px;margin:5px 0}.latest-number{text-align:right;display:flex;flex-direction:column;align-items:flex-end}.latest-number strong{font-size:43px;line-height:1}.latest-number span{color:#e4c77f;font-weight:700}.latest-round #latestDate{color:#d8c282}.data-lock{color:#d8c282;font-size:22px}
+.tee-black{background:#1c1f1d;color:#fff;border:1px solid #859387}.tee-orange{background:#e99b46;color:#182d21}.tee-green{background:#61a77c;color:#10291c}
+@media(max-width:480px){nav{gap:2px;padding-left:7px;padding-right:7px}nav button{font-size:10px;padding:6px 0;min-height:55px}nav .nav-icon{font-size:21px}}
+
+.hcp-number{font-size:48px;font-weight:850;color:#e6c779;line-height:1.2;margin:12px 0}.course-item .actions{margin-top:13px}
+.distance-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.distance-grid .parcell{background:#1b4230;border:1px solid #42664f;border-radius:13px;padding:10px}.distance-grid .parctrl{flex-direction:row;align-items:center;justify-content:space-between}.distance-grid .parctrl button{min-height:44px;min-width:36px}.distance-grid .parctrl strong{font-size:20px}.distance-grid .parcell input{margin-top:8px;text-align:center;min-height:44px;padding:8px 3px}.saved-par-hole small:last-child{display:block;margin-top:5px;color:#e4c77c}@media(max-width:420px){.distance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v0.9.2: six thumb-friendly destinations */
+nav button{min-height:60px;font-size:10px}nav .nav-icon{font-size:21px}
+.hcp-overview{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hcp-overview .card{margin:6px 0}.hcp-overview .hcp-number{font-size:36px}
+.hcp-chart svg{display:block;width:100%;height:auto;max-height:260px}.hcp-entry{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #355b44}.hcp-entry:last-child{border:0}.hcp-entry strong,.hcp-entry small{display:block}.hcp-entry small{margin-top:5px}.hcp-entry-right{text-align:right;min-width:90px}.hcp-entry-right strong{color:#e6c779;font-size:20px}
+@media(max-width:380px){nav{gap:0;padding-left:3px;padding-right:3px}nav button{font-size:9px;padding:5px 0}.hcp-overview .card{padding:12px}.hcp-overview .hcp-number{font-size:31px}}
+.player-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}.player-metric{padding:14px;background:#214735;border-radius:14px;display:flex;flex-direction:column;gap:7px}.player-metric strong{font-size:32px;color:#f6e8b5}.player-metric small{font-size:11px;color:#c8d6c8}.player-check{display:flex;align-items:center;gap:10px;margin:12px 0;font-size:14px}.player-check input{width:22px;height:22px;min-height:22px;flex:none;accent-color:#e4c77e}.club-row{display:grid;grid-template-columns:minmax(0,1fr) 100px 44px;gap:7px;align-items:center;margin:10px 0}.club-row input{min-width:0;margin:0}.club-row button{padding:8px;min-height:44px}#player .card{margin-bottom:14px}
+
+/* v0.9.6: restore native touchable checkbox controls */
+input[type="checkbox"]{-webkit-appearance:checkbox!important;appearance:auto!important;width:23px!important;height:23px!important;min-height:23px!important;padding:0!important;flex:0 0 23px;accent-color:#e4c77e;cursor:pointer}
+.player-check{cursor:pointer;min-height:45px;display:flex;align-items:center;gap:12px;user-select:none;-webkit-user-select:none}
+.player-check:has(input:checked){color:#f2d48b}
+.club-distance-chart{margin:16px 0 20px;padding:15px;border:1px solid #45634d;border-radius:15px;background:#102d22}
+.club-bar-entry{margin:13px 0}.club-bar-heading{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px}.club-bar-heading strong{color:#eed38d;font-variant-numeric:tabular-nums}
+.club-bar-track{height:13px;border-radius:100px;background:#294936;overflow:hidden}.club-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#729b75,#e3c477);min-width:2px}
+.official-hcp-display{padding:15px;margin:14px 0;background:#214735;border-radius:14px;border:1px solid #507256}.official-hcp-display strong{font-size:34px;color:#f6e8b5;display:block;margin-top:5px}
+.si-pill{display:inline-block;padding:5px 10px;border:1px solid #7b916f;border-radius:20px;color:#e6cc88;font-weight:700;font-size:12px}
+.edit-panel{margin:14px 0;border:1px solid #42614d;border-radius:13px;padding:12px;background:#153728}.edit-panel summary{cursor:pointer;font-weight:650;color:#e7d18f;list-style-position:inside;padding:3px 0}.edit-panel[open] summary{margin-bottom:12px}.edit-panel input{margin-top:8px}.bag-unit{display:flex;align-items:center;justify-content:space-between;gap:12px}.bag-unit label{margin:0}.bag-unit select{width:auto;min-width:125px;margin:0}.tracking-choice{border:1px solid #47664f;border-radius:14px;padding:13px;margin:18px 0}.tracking-choice>strong{display:block;margin-bottom:10px}.tracking-option{display:flex;align-items:center;gap:12px;padding:11px;border-radius:10px;background:#1b3c2b;margin:8px 0;cursor:pointer}.tracking-option input{width:21px;height:21px;flex:none;accent-color:#e4c77e}.tracking-option span{display:flex;flex-direction:column;gap:3px}.tracking-option small{color:#bed0c1}.hole-tracking{margin:18px 0 8px;padding:14px;border:1px solid #42614d;border-radius:14px;background:#143426}.tracking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tracking-grid label{font-size:12px}.tracking-grid select,.tracking-grid input{width:100%;min-width:0;margin-top:6px}@media(max-width:370px){.tracking-grid{grid-template-columns:1fr}}
