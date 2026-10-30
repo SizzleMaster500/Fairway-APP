@@ -1,122 +1,123 @@
-# ⛳ Fairway
-### Your golf. Your rounds. Your progress.
+# ⛳ Fairway — Your Golf Journal
 
-**A simple, free golf journal built for golfers who love the game.**
+**Every round tells a story.**
 
-Fairway is a personal golf score-tracking application designed to make recording, reviewing, and understanding your golf rounds easier than ever.
+Fairway is a free, mobile-first golf scorecard and personal golf journal. Record rounds, build a golf bag, follow your progress and celebrate achievements — without creating an account or paying a subscription.
 
-Whether you're just getting started in golf, working towards a lower handicap, or simply enjoying a Sunday round with friends, Fairway gives you a place to keep track of your golfing journey.
+> **Current release: v0.9.5 (beta)** · A personal project, built for the love of golf.
 
-No expensive golf watch. No complicated equipment. No subscription required.
+## Features
 
-Just you, your golf clubs, and your scores.
+| Area | What Fairway does today |
+| --- | --- |
+| **Scorecards** | Enter strokes hole by hole on 9- or 18-hole courses; resume an in-progress round. |
+| **Courses** | Save and edit course names, tee colours, hole pars, optional distances, Course Rating, Slope Rating and Stroke Index. |
+| **History** | Review saved rounds and scorecards; edit or delete rounds. |
+| **Player** | View personal and eligible-round handicap estimates, enter an official handicap reference, and manage your golf bag. |
+| **My Golf Bag** | Save club names and carry distances; display distances in metres or yards. |
+| **Performance** | Optionally record putting and shot details during a round and review available tracked statistics. |
+| **Achievements** | Track milestones such as birdies, eagles and holes-in-one. |
+| **Data & backup** | Save data locally in your browser; export or import a JSON backup. |
+
+The interface is designed primarily for phones but can also be used in a desktop browser.
+
+## Try Fairway
+
+### Use the hosted app
+
+Open the project's GitHub Pages URL in your browser. If your browser supports installing websites, you can add Fairway to your home screen or install it as a web app.
+
+- **iPhone:** Open in Safari, then use **Share → Add to Home Screen**.
+- **Android:** Open in Chrome and use **Install app** or **Add to Home screen**, if offered.
+- **Desktop:** Open the URL in a modern browser; an install option may be available.
+
+Installation support and offline page loading vary by browser. **v0.9.5 does not include a service worker**, so do not rely on the site being available when completely offline, even though previously loaded pages can save data locally.
+
+### Run locally
+
+This release is a static website. From the folder containing `index.html`, run:
+
+```bash
+python -m http.server 8000
+```
+
+Then open `http://localhost:8000` in your browser.
+
+### Publish using GitHub Pages
+
+1. Upload `index.html`, `manifest.webmanifest`, `icon-192.png`, `icon-512.png` and `apple-touch-icon.png` to the repository root.
+2. In the repository, go to **Settings → Pages**.
+3. Configure deployment from the `main` branch and root directory, or use your existing Pages deployment workflow.
+4. Open the published HTTPS URL.
+
+A custom domain is optional; it is **not** required to use Fairway as a web app.
+
+## Handicap estimates: important limitations
+
+Fairway shows a **personal handicap estimate** from rated, non-test rounds and a separate **WHS-style estimate** from rounds marked as eligible. You can also enter your actual Swiss Golf Handicap Index manually as a reference.
+
+**Neither calculated figure is an official Handicap Index.** Fairway does not submit scores to Swiss Golf or determine whether a round qualifies for official handicap purposes. Marking a round “eligible” in Fairway is only an internal filter — it does not register an EDS/general-play score.
+
+Current calculation limitations include:
+
+- **Nine-hole results:** Fairway uses an approximation based on doubling the played-nine differential, **not** the WHS expected-score method.
+- **18-hole adjusted scores:** Net double bogey adjustment is available only when the necessary Stroke Index data and a manually entered official handicap reference are present.
+- **Historical handicaps:** The entered official handicap reference is not automatically reconstructed for each past round.
+- **Further WHS rules:** PCC, exceptional-score reductions, soft/hard caps and other official procedures are not fully implemented.
+
+Use your golf association's official system as the source of truth for your official Handicap Index.
+
+## Privacy, storage and backups
+
+**There are currently no Fairway accounts or cloud synchronization.** Round history, courses, club information and settings are saved in the browser's local storage on the device you use.
+
+This means:
+
+- Data does **not** automatically follow you to another phone, computer or browser.
+- Clearing site data, deleting the browser profile or losing the device can erase your Fairway records.
+- Export a JSON backup regularly, especially **before updating** the app or changing devices.
+- Importing a backup replaces the local data in the current browser; check that you have the right file first.
+
+The app currently uses the local storage key `fairway-data-v2` to preserve compatibility with recent versions.
+
+## Project files
+
+```text
+index.html              # Application UI, styles and JavaScript
+manifest.webmanifest    # Web app name, icons and display settings
+icon-192.png            # Web app icon
+icon-512.png            # Web app icon
+apple-touch-icon.png    # Apple home-screen icon
+README.md               # Project documentation
+```
+
+## Roadmap
+
+The following items are **planned**, not yet released:
+
+- [ ] Improve WHS calculations, especially nine-hole expected scores and historical handicap handling.
+- [ ] Expand and polish Player performance statistics and visualizations.
+- [ ] Add reliable offline app loading and synchronization safeguards.
+- [ ] Offer **optional** user accounts and cloud backups while preserving account-free local use.
+- [ ] Synchronize rounds, courses and clubs across devices for signed-in users.
+- [ ] Test installation and layout thoroughly across iPhone, Android and desktop.
+- [ ] Optionally add a custom domain.
+
+## Release history
+
+| Version | Milestone |
+| --- | --- |
+| **v0.9.5** | Stroke Index entry and handicap calculation refinements. |
+| **v0.9.4** | Golf bag distance visualization and optional shot/performance tracking. |
+| **v0.9.3** | Player section, dual handicap estimates and golf bag management. |
+| **v0.9.2** | Earlier scorecard, course, history, handicap and backup foundation. |
+| **v0.6–v0.9** | Expanded course management, editing, awards, navigation and presentation. |
+| **v0.1–v0.5** | Initial scorecard prototype and design iterations. |
+
+## Philosophy
+
+Fairway began as a way to track golf rounds with friends and family without subscriptions or unnecessary complexity. The goal is to keep the core experience **free, accessible and enjoyable**, whether you play occasionally or every weekend.
 
 ---
 
-## 🌲 What is Fairway?
-
-Fairway started as a small personal project with one simple idea:
-
-**What if tracking your golf rounds could be easy, enjoyable, and completely free?**
-
-The goal is to create a clean, accessible golf tracking experience that works directly from your smartphone.
-
-Instead of keeping paper scorecards or forgetting what you shot at a particular course, Fairway lets you build your own digital golf history.
-
-Every round tells a story. Fairway helps you remember it.
-
-## 🏌️ Features
-
-Fairway is being developed with simplicity and usability in mind.
-
-**Current features include:**
-
-- ⛳ **Round tracking** — Record your scores hole by hole during or after a round.
-- 🌍 **Custom golf courses** — Save courses with their individual hole pars, tee information, Course Rating, and Slope Rating.
-- 📊 **Golf dashboard** — View your total rounds, holes played, and scoring statistics.
-- 📖 **Round history** — Revisit previous rounds and review your complete scorecards.
-- 📱 **Mobile-friendly interface** — Designed with smartphones in mind, particularly iPhone.
-- 💾 **Local score storage** — Keep your golf history saved on your device.
-- 🔄 **Backup and restore** — Export and import your golfing data.
-- 🎨 **Forest-inspired design** — A clean, modern interface inspired by the natural beauty of golf courses.
-
-## 📱 How to use Fairway
-
-Fairway is currently available as a web application.
-
-**[Launch Fairway](https://sizzlemaster500.github.io/Fairway-APP/)**
-
-You can use Fairway directly in your browser or add it to your iPhone Home Screen for convenient access.
-
-To get started:
-
-1. Open Fairway on your smartphone or computer.
-2. Create and save your favorite golf course.
-3. Select the course and start a new round.
-4. Enter your strokes as you play.
-5. Finish your round and review your scorecard.
-6. Return anytime to explore your golfing history.
-
-**Important:** Scores are currently stored locally on your device. They are not yet synchronized between devices, so regular backups are recommended.
-
-## 🚀 The future of Fairway
-
-Fairway is still in its early stages, and the vision goes beyond simply recording scores.
-
-Potential future developments include:
-
-- Personal golf accounts and cloud synchronization.
-- Improved statistics and performance analysis.
-- Handicap tracking and estimated handicap calculations.
-- More detailed course information.
-- Personal records and achievement tracking.
-- Sharing rounds and comparing scores with friends.
-- Improved offline support.
-- A more complete mobile application experience.
-
-These features are ideas for future releases rather than guaranteed functionality.
-
-The long-term goal is to make Fairway a useful, enjoyable, and accessible golf companion for anyone who wants to track their game.
-
-## 💚 Built for golfers, by a golfer
-
-Fairway is an independent passion project, created out of a genuine love for golf and an interest in software development.
-
-It isn't backed by a large company or built around selling subscriptions.
-
-It's simply an attempt to make something useful for the golfing community.
-
-The application is currently free to use, and the intention is to keep its core score-tracking experience accessible as the project grows.
-
-## 🛠️ Technology
-
-Fairway currently uses:
-
-- **HTML5** — Application structure.
-- **CSS3** — Interface and visual design.
-- **JavaScript** — Score tracking, calculations, and interactions.
-- **Browser Local Storage** — Saving rounds and courses.
-- **GitHub Pages** — Free website hosting.
-
-The application is being developed incrementally, with improvements introduced through future versions.
-
-## 📌 Project status
-
-**Current development stage: Early development / Version 0.3**
-
-Fairway is actively evolving. Bugs, limitations, and design changes are expected as new features are tested and introduced.
-
-Feedback, ideas, and suggestions are always welcome through GitHub Issues.
-
-## 📄 Availability
-
-Fairway is free to access and use.
-
-The source code is publicly visible on GitHub. A formal open-source license has not yet been selected, so public access to the repository should not be interpreted as permission to redistribute or modify the code.
-
----
-
-### 🌿 Fairway
-*Built for the love of golf.*
-
-**Every hole. Every round. Every memory.**
+**Fairway** · Built for the love of golf. 🌲⛳
