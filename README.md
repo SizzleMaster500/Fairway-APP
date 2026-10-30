@@ -2,7 +2,7 @@
 
 **Every round tells a story.**
 
-Fairway is a free, mobile-first golf scorecard and personal golf journal. Record rounds, build a golf bag, follow your progress and celebrate achievements — without creating an account or paying a subscription.
+Fairway is a free, mobile-first golf scorecard and personal golf journal. Record rounds, build a golf bag, follow your progress and celebrate achievements, without creating an account or paying a subscription.
 
 > **Current release: v0.9.5 (beta)** · A personal project, built for the love of golf.
 
