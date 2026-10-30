@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import path from 'node:path';
-const root = path.resolve(import.meta.dirname, '..');
+const root = path.resolve(import.meta.dirname);
 const html = fs.readFileSync(path.join(root,'index.html'),'utf8');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
 for(const f of ['styles.css','js/storage.js','js/handicap.js','js/player.js','js/app.js','icon-192.png','icon-512.png','apple-touch-icon.png']) assert(fs.existsSync(path.join(root,f)),`Missing ${f}`);
