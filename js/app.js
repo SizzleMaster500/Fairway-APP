@@ -36,11 +36,48 @@ function finishRound(){let d=db.draft;if(!d)return;if(d.scores.some(x=>x===null)
 function discardRound(){if(confirm('Discard this unfinished round?')){db.draft=null;save();}}
 function deleteRound(id){if(confirm('Permanently delete this round?')){db.rounds=db.rounds.filter(r=>String(r.id)!==String(id));save();}}
 function displayDate(iso){const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return match?match[3]+'.'+match[2]+'.'+match[1]:String(iso||'');}
-function editRound(id){const original=db.rounds.find(r=>String(r.id)===String(id));if(!original||!validRound(original))return;editingRound={id:original.id,date:original.date,scores:[...original.scores],pars:[...original.pars],course:original.course,tees:original.tees};document.getElementById('editDate').value=editingRound.date;document.getElementById("editEligible").checked=!!original.eligible;document.getElementById("editTest").checked=!!original.test;document.getElementById('editCourseName').textContent=editingRound.course;document.getElementById('editTeeBadge').replaceChildren(teeBadge(editingRound.tees));renderEditScores();tab('editRound');}
+function editRound(id){
+ const original=db.rounds.find(r=>String(r.id)===String(id));
+ if(!original||!validRound(original))return;
+ editingRound={id:original.id,date:original.date,scores:[...original.scores],pars:[...original.pars],course:original.course,tees:original.tees,selectedCourseId:''};
+ document.getElementById('editDate').value=editingRound.date;
+ document.getElementById('editEligible').checked=!!original.eligible;
+ document.getElementById('editTest').checked=!!original.test;
+ document.getElementById('editCourseName').textContent=editingRound.course;
+ const select=document.getElementById('editTeeSelect');select.replaceChildren();
+ const current=node('option',String(original.tees||'Standard')+' tees (recorded)');current.value='';select.append(current);
+ const matches=db.courses.filter(c=>c.name===original.course&&c.pars.length===original.scores.length);
+ matches.forEach(c=>{const option=node('option',c.tees+' tees · CR '+(c.cr??'—')+' · Slope '+(c.slope??'—'));option.value=String(c.id);select.append(option);});
+ const same=matches.find(c=>c.tees===original.tees&&c.cr===original.cr&&c.slope===original.slope);
+ if(same)select.value=String(same.id);
+ document.getElementById('editTeeHint').textContent=matches.length?'Choose the saved tee configuration you actually played. Your strokes will stay the same.':'No matching saved tee configurations found. Add this course and its tees under My Courses first.';
+ document.getElementById('editTeeBadge').replaceChildren(teeBadge(editingRound.tees));
+ renderEditScores();tab('editRound');
+}
+function changeEditedRoundTees(id){
+ if(!editingRound)return;
+ const original=db.rounds.find(r=>String(r.id)===String(editingRound.id));
+ const selected=db.courses.find(c=>String(c.id)===String(id)&&c.name===editingRound.course&&c.pars.length===editingRound.scores.length);
+ editingRound.selectedCourseId=selected?String(selected.id):'';
+ editingRound.tees=selected?selected.tees:original.tees;
+ editingRound.pars=selected?[...selected.pars]:[...original.pars];
+ document.getElementById('editTeeBadge').replaceChildren(teeBadge(editingRound.tees));
+ document.getElementById('editTeeHint').textContent=selected?'Selected: CR '+(selected.cr??'—')+' · Slope '+(selected.slope??'—')+'. Scores remain unchanged; hole pars and ratings update when you save.':'Using the tees and course ratings originally recorded for this round.';
+ renderEditScores();
+}
 function renderEditScores(){if(!editingRound)return;const list=document.getElementById('editHoleList');list.replaceChildren();editingRound.scores.forEach((strokes,i)=>{const row=node('div',undefined,'edit-hole-row'),info=node('div',undefined,'edit-hole-info'),controls=node('div',undefined,'edit-hole-controls'),minus=node('button','−','secondary'),value=node('strong',String(strokes)),plus=node('button','+');info.append(node('strong','Hole '+(i+1)),node('small','Par '+editingRound.pars[i]));minus.type=plus.type='button';minus.setAttribute('aria-label','Decrease hole '+(i+1)+' strokes');plus.setAttribute('aria-label','Increase hole '+(i+1)+' strokes');minus.disabled=strokes<=1;plus.disabled=strokes>=30;minus.onclick=()=>adjustEditScore(i,-1);plus.onclick=()=>adjustEditScore(i,1);controls.append(minus,value,plus);row.append(info,controls);list.append(row);});document.getElementById('editTotal').textContent=editingRound.scores.reduce((a,b)=>a+b,0)+' strokes';}
 function adjustEditScore(i,delta){if(!editingRound)return;editingRound.scores[i]=Math.max(1,Math.min(30,editingRound.scores[i]+delta));renderEditScores();}
 function cancelEditRound(){editingRound=null;tab('history');}
-function saveEditedRound(){if(!editingRound)return;const date=document.getElementById('editDate').value;const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);if(!m||Number.isNaN(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').getFullYear()!==Number(m[1])||new Date(date+'T12:00:00').getMonth()+1!==Number(m[2])||new Date(date+'T12:00:00').getDate()!==Number(m[3])){alert('Please select a valid date.');return;}const index=db.rounds.findIndex(r=>String(r.id)===String(editingRound.id));if(index<0){alert('This round could not be found.');cancelEditRound();return;}const updated={...db.rounds[index],date,eligible:document.getElementById("editEligible").checked,test:document.getElementById("editTest").checked,scores:[...editingRound.scores]};if(!validRound(updated)||updated.scores.includes(null)){alert('Please check your scores.');return;}db.rounds[index]=updated;editingRound=null;save();tab('history');note('Round updated successfully.');}
+function saveEditedRound(){if(!editingRound)return;const date=document.getElementById('editDate').value;const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);if(!m||Number.isNaN(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').getFullYear()!==Number(m[1])||new Date(date+'T12:00:00').getMonth()+1!==Number(m[2])||new Date(date+'T12:00:00').getDate()!==Number(m[3])){alert('Please select a valid date.');return;}const index=db.rounds.findIndex(r=>String(r.id)===String(editingRound.id));if(index<0){alert('This round could not be found.');cancelEditRound();return;}const updated={...db.rounds[index],date,eligible:document.getElementById('editEligible').checked,test:document.getElementById('editTest').checked,scores:[...editingRound.scores]};
+ if(editingRound.selectedCourseId){
+  const c=db.courses.find(c=>String(c.id)===editingRound.selectedCourseId&&c.name===updated.course&&c.pars.length===updated.scores.length);
+  if(!c){alert('The selected tee configuration is no longer available.');return;}
+  updated.tees=c.tees;updated.pars=[...c.pars];updated.cr=c.cr;updated.slope=c.slope;
+  updated.strokeIndices=validStrokeIndices(c.strokeIndices,c.pars.length)?[...c.strokeIndices]:Array(c.pars.length).fill(null);
+  updated.distances=validDistances(c.distances,c.pars.length)?[...c.distances]:Array(c.pars.length).fill(null);
+  updated.distanceUnit=courseUnit(c);
+ }
+if(!validRound(updated)||updated.scores.includes(null)){alert('Please check your scores.');return;}db.rounds[index]=updated;editingRound=null;save();tab('history');note('Round updated successfully.');}
 function scoreDiff(r){return r.scores.reduce((a,b)=>a+(b||0),0)-r.pars.reduce((a,b,i)=>a+(r.scores[i]===null?0:b),0);}
 function signed(n){return n===0?'E':n>0?'+'+n:String(n);}
 function node(tag,text,cls){let e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
