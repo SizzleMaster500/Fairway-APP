@@ -1,23 +1,3 @@
-# Fairway v0.10.0 — Unified Courses
-
-**Back up your rounds (JSON export) before updating.** This version automatically groups legacy saved course entries by course name and migrates tee/hole variants into a single course record. An untouched copy of the old localStorage JSON is also saved under `fairway-data-v2-before-unified-v010` on the same device. Existing rounds and their detailed hole statistics are preserved.
-
-## New course model
-
-One course contains shared hole pars and multiple tee configurations. Each configuration has a tee color, hole format (Front 9, Back 9, Full 18, or 9 holes), hole distances, Stroke Indices, Course Rating and Slope. Add a configuration for each tee/format combination you actually play. Published ratings must be entered for each format; the app does not invent them.
-
-In Play, choose the course first, then the tee and hole configuration. In History → Edit Round, select another saved configuration with the same number of holes. Scores and detailed hole tracking are not replaced. Changing an existing completed 9-hole round to 18 holes is intentionally not supported because additional hole scores would be missing.
-
-## Limitations and safety
-
-Migration combines legacy entries with matching names (and names ending in '18 holes'). Check the merged course and verify each tee's ratings, distances and Stroke Indices. Legacy 9-hole records on a course that also has an 18-hole record are assumed to describe the Front 9; verify before use. Existing completed rounds remain as originally recorded. Browser storage is local; keep JSON exports. The handicap calculation remains a personal estimate, not official WHS.
-
-## Installation
-
-Upload the repository root files to GitHub's root, and the JavaScript files inside the existing `js/` folder. Ensure `js/unified.js` is included; `index.html` loads it after `js/app.js`.
-
----
-
 # ⛳ Fairway — Your Golf Journal
 
 **Every round tells a story.**
