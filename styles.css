@@ -154,3 +154,8 @@ input[type="checkbox"]{-webkit-appearance:checkbox!important;appearance:auto!imp
 .u-play-summary{margin-top:15px;padding:13px;border-radius:13px;border:1px solid #4b6a52;background:#102c22;color:#dce9da;font-size:13px;line-height:1.6}
 body.fw-keyboard-open nav{display:none!important}
 body.fw-keyboard-open main{padding-bottom:20px!important}
+
+/* v0.10.2 header polish: transparent illustrated mark without a second app-icon frame */
+header .brand{gap:11px}
+header .brand .logo{width:58px;height:62px;flex:0 0 58px;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible;display:flex;align-items:center;justify-content:center}
+header .brand .logo img{width:100%;height:100%;object-fit:contain;display:block}
