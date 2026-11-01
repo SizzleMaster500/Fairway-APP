@@ -131,3 +131,14 @@ input[type="checkbox"]{-webkit-appearance:checkbox!important;appearance:auto!imp
 #courseEditor.hidden{display:none!important}
 /* v0.10 unified course editor */
 .u-par-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:9px;margin:12px 0 24px}.u-par-grid label{font-size:12px}.u-par-grid select{width:100%;min-width:0}.u-add-row,.u-variant-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.u-add-row select{flex:1;min-width:100px}.u-variant-tabs button{width:auto;font-size:12px;padding:10px}.u-variant-panel{padding:14px;border:1px solid #456d55;border-radius:14px;margin-top:12px}.u-rating-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.u-hole-grid{margin:14px 0;display:grid;gap:6px}.u-hole-row{display:grid;grid-template-columns:46px 55px minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center}.u-hole-row input{width:100%;min-width:0;padding:9px 5px}.u-hole-header{font-size:12px;color:#c7d4cc}.u-variant-line{display:flex;align-items:center;gap:12px;padding:9px 0;flex-wrap:wrap}
+
+/* Fairway course emblems — bundled locally for offline use */
+.u-course-heading{display:flex;align-items:center;gap:13px;min-width:0;margin-bottom:12px}
+.u-course-heading .saved-course-head{flex:1;min-width:0;margin:0}
+.u-course-icon{width:68px;height:68px;object-fit:cover;border-radius:16px;display:block;flex-shrink:0;background:#103023}
+.u-icon-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:8px 0 20px}
+.u-icon-option{display:flex;flex-direction:column;align-items:center;gap:6px;padding:7px 4px;border:2px solid transparent;border-radius:14px;background:#163d2d;color:#e9e4cc;cursor:pointer;min-width:0}
+.u-icon-option.selected{border-color:#dfbb61;background:#235039}
+.u-icon-option .u-course-icon{width:100%;max-width:82px;height:auto;aspect-ratio:1/1;border-radius:12px}
+.u-icon-option span{font-size:10px;line-height:1.2;text-align:center}
+@media(max-width:380px){.u-icon-picker{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.u-icon-option span{font-size:9px}.u-course-icon{width:58px;height:58px}}
