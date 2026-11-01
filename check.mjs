@@ -8,7 +8,7 @@ const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest')
 for(const f of ['styles.css','js/storage.js','js/handicap.js','js/player.js','js/app.js','js/unified.js','icon-192.png','icon-512.png','apple-touch-icon.png']) assert(fs.existsSync(path.join(root,f)),`Missing ${f}`);
 for(const f of ['storage','handicap','player','app','unified']) assert(html.includes(`./js/${f}.js`),`Missing script ${f}`);
 assert.equal(manifest.start_url,'./');
-assert(html.includes('v0.9.8'));
+assert(html.includes('v0.10.2')); 
 for(const f of ['storage','handicap','player','app','unified']) new vm.Script(fs.readFileSync(path.join(root,`js/${f}.js`),'utf8'));
 const ctx=vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(root,'js/app.js'),'utf8').split('function validStrokeIndices(')[1].split('\n')[0].replace(/^/,'function validStrokeIndices('),ctx);
