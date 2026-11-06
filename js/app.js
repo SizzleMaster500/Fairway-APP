@@ -1,151 +1,312 @@
-// Fairway v0.9.8 — app UI, courses and rounds; behaviour preserved.
-const KEY='fairway-data-v2',OLD='fairway-data-v1';let db=load(),selectedHole=0,coursePars=Array(9).fill(4),courseDistances=Array(9).fill(null),courseStrokeIndices=Array(9).fill(null),courseDistanceUnit="m",editingRound=null,editingCourseId=null;
+// Fairway — screens, tab navigation and start-up.
 
-
-
-function note(s){document.getElementById('notice').textContent=s;}
-function tab(t){document.querySelectorAll('main section').forEach(x=>x.classList.toggle('hidden',x.id!==t));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));render();window.scrollTo({top:0,behavior:'instant'});}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
-function resizeCoursePars(){let n=+document.getElementById('courseHoles').value;coursePars=Array.from({length:n},(_,i)=>coursePars[i]??4);courseDistances=Array.from({length:n},(_,i)=>courseDistances[i]??null);courseStrokeIndices=Array.from({length:n},(_,i)=>courseStrokeIndices[i]??null);renderCoursePars();}
-function autoFillPars(value){if(!value)return;coursePars.fill(Number(value));renderCoursePars();document.getElementById('autoPar').value='';}
-function adjustCoursePar(i,delta){coursePars[i]=Math.max(3,Math.min(5,coursePars[i]+delta));renderCoursePars();}
-// Distances are stored as metres; the unit selector only changes how they are entered and displayed.
-const YARDS_PER_METRE=1.0936132983;
-function toMetres(value,unit){return unit==='yd'?value/YARDS_PER_METRE:value;}
-function fromMetres(value,unit){return unit==='yd'?value*YARDS_PER_METRE:value;}
-function distanceLabel(m,unit){return Number.isFinite(m)&&m>0?Math.round(fromMetres(m,unit)).toLocaleString('en-GB')+' '+unit:'—';}
-function courseUnit(c){return c.distanceUnit==='yd'?'yd':'m';}
-function validStrokeIndices(a,n){return Array.isArray(a)&&a.length===n&&(a.every(x=>x===null)||a.every(x=>Number.isInteger(x)&&x>=1&&x<=(n===9?18:n))&&new Set(a).size===n);}
-function validDistances(arr,n){return Array.isArray(arr)&&arr.length===n&&arr.every(v=>v===null||(typeof v==='number'&&Number.isFinite(v)&&v>0&&v<=1500));}
-function setCourseDistance(i,raw){if(raw===''){courseDistances[i]=null;}else{const value=Number(raw);if(!Number.isFinite(value)||value<=0||value>2000)return;courseDistances[i]=toMetres(value,courseDistanceUnit);}renderDistanceTotal();}
-function renderDistanceTotal(){const known=courseDistances.filter(v=>Number.isFinite(v)&&v>0);document.getElementById('courseTotalDistance').textContent=known.length?distanceLabel(known.reduce((a,b)=>a+b,0),courseDistanceUnit):'—';}
-function changeCourseDistanceUnit(unit){if(!['m','yd'].includes(unit))return;courseDistanceUnit=unit;renderCoursePars();}
-function renderCoursePars(){let grid=document.getElementById('courseParGrid');grid.replaceChildren();coursePars.forEach((par,i)=>{let wrap=node('div',undefined,'parcell'),label=node('small','HOLE '+(i+1)),ctrl=node('div',undefined,'parctrl'),up=node('button','▲'),num=node('strong',String(par)),down=node('button','▼'),distance=document.createElement('input');up.type=down.type='button';up.setAttribute('aria-label','Increase par on hole '+(i+1));down.setAttribute('aria-label','Decrease par on hole '+(i+1));up.onclick=()=>adjustCoursePar(i,1);down.onclick=()=>adjustCoursePar(i,-1);ctrl.append(up,num,down);distance.type='number';distance.inputMode='numeric';distance.min='1';distance.max='2000';distance.step='1';distance.placeholder=courseDistanceUnit;distance.setAttribute('aria-label','Hole '+(i+1)+' distance in '+(courseDistanceUnit==='m'?'metres':'yards'));distance.value=courseDistances[i]===null?'':String(Math.round(fromMetres(courseDistances[i],courseDistanceUnit)));distance.addEventListener('input',()=>setCourseDistance(i,distance.value));const si=document.createElement("input");si.type="number";si.inputMode="numeric";si.min="1";si.max="18";si.step="1";si.placeholder="Stroke Index";si.setAttribute("aria-label","Hole "+(i+1)+" Stroke Index");si.value=courseStrokeIndices[i]??"";si.oninput=()=>{courseStrokeIndices[i]=si.value===""?null:Number(si.value);};wrap.append(label,ctrl,distance,si);grid.append(wrap);});document.getElementById('courseTotalPar').textContent=coursePars.reduce((a,b)=>a+b,0);document.getElementById('parCount').textContent=coursePars.length+' holes';renderDistanceTotal();}
-function openCourseEditor(){if(editingCourseId===null)cancelEditCourse();document.getElementById("courseEditor").classList.remove("hidden");document.getElementById("courseName").focus();}
-function closeCourseEditor(){document.getElementById("courseEditor").classList.add("hidden");}
-function editCourse(id){openCourseEditor();const c=db.courses.find(x=>String(x.id)===String(id));if(!c)return;editingCourseId=c.id;document.getElementById('courseName').value=c.name;document.getElementById('courseTees').value=c.tees;document.getElementById('courseHoles').value=String(c.pars.length);document.getElementById('courseCR').value=c.cr??'';document.getElementById('courseSlope').value=c.slope??'';coursePars=[...c.pars];courseDistances=validDistances(c.distances,c.pars.length)?[...c.distances]:Array(c.pars.length).fill(null);courseStrokeIndices=validStrokeIndices(c.strokeIndices,c.pars.length)?[...c.strokeIndices]:Array(c.pars.length).fill(null);courseDistanceUnit=courseUnit(c);document.getElementById('courseDistanceUnit').value=courseDistanceUnit;renderCoursePars();document.getElementById('courseFormHeading').textContent='Edit course';document.getElementById('courseSaveButton').textContent='Save changes';document.getElementById('courseCancelButton').classList.remove('hidden');tab('courses');document.getElementById('courseName').scrollIntoView({behavior:'smooth',block:'center'});}
-function cancelEditCourse(){editingCourseId=null;document.getElementById('courseFormHeading').textContent='Add a course';document.getElementById('courseSaveButton').textContent='Save course';document.getElementById('courseCancelButton').classList.add('hidden');document.getElementById('courseName').value='';document.getElementById('courseTees').value='Yellow';document.getElementById('courseCR').value='';document.getElementById('courseSlope').value='';document.getElementById('courseHoles').value='9';coursePars=Array(9).fill(4);courseDistances=Array(9).fill(null);courseStrokeIndices=Array(9).fill(null);courseDistanceUnit="m";document.getElementById("courseDistanceUnit").value="m";renderCoursePars();closeCourseEditor();}
-function addCourse(){let name=document.getElementById('courseName').value.trim(),tees=document.getElementById('courseTees').value.trim(),crRaw=document.getElementById('courseCR').value,slopeRaw=document.getElementById('courseSlope').value,cr=crRaw===''?null:Number(crRaw),slope=slopeRaw===''?null:Number(slopeRaw);if(!name||!['Yellow','White','Red','Blue','Black','Orange','Green'].includes(tees)||(cr!==null&&(!Number.isFinite(cr)||cr<=0))||(slope!==null&&(!Number.isInteger(slope)||slope<55||slope>155))){alert('Please check the course name, tee color, Course Rating and Slope.');return;}if(!validDistances(courseDistances,coursePars.length)){alert("Please check the hole distances (1–1500 metres), or leave them blank.");return;}if(courseStrokeIndices.some(x=>x!==null)&&!validStrokeIndices(courseStrokeIndices,coursePars.length)){alert("Enter each Stroke Index once (1 to 18), or leave all blank.");return;}const updated={name,tees,pars:[...coursePars],strokeIndices:[...courseStrokeIndices],distances:[...courseDistances],distanceUnit:courseDistanceUnit,cr,slope};if(editingCourseId!==null){const index=db.courses.findIndex(c=>String(c.id)===String(editingCourseId));if(index<0){alert('Course not found.');cancelEditCourse();return;}db.courses[index]={...db.courses[index],...updated};save();cancelEditCourse();note('Course updated. Existing rounds were not changed.');}else{db.courses.push({id:crypto.randomUUID(),...updated});save();cancelEditCourse();note('Course saved.');}}
-function removeCourse(id){if(confirm('Remove this saved course? Existing rounds will stay saved.')){db.courses=db.courses.filter(c=>c.id!==id);save();}}
-function startRound(){if(db.draft){alert('Finish or discard the active round first.');return;}let c=db.courses.find(c=>c.id===document.getElementById('courseSelect').value);if(!c){alert('Please add a course first.');tab('courses');return;}db.draft={eligible:document.getElementById("roundEligible").checked,test:document.getElementById("roundTest").checked,id:crypto.randomUUID(),course:c.name,tees:c.tees,date:document.getElementById('roundDate').value||new Date().toLocaleDateString('en-CA'),pars:[...c.pars],strokeIndices:validStrokeIndices(c.strokeIndices,c.pars.length)?[...c.strokeIndices]:Array(c.pars.length).fill(null),distances:validDistances(c.distances,c.pars.length)?[...c.distances]:Array(c.pars.length).fill(null),distanceUnit:courseUnit(c),scores:Array(c.pars.length).fill(null),trackingMode:document.querySelector('input[name="roundMode"]:checked')?.value||"score",holeStats:Array.from({length:c.pars.length},()=>({})),cr:c.cr,slope:c.slope};selectedHole=0;save();}
-function changeStrokes(delta){let d=db.draft;if(!d)return;let current=d.scores[selectedHole];d.scores[selectedHole]=Math.min(30,Math.max(1,(current===null?0:current)+delta));save();}
-function setPar(p){if(!db.draft)return;db.draft.pars[selectedHole]=p;save();}
-function moveHole(delta){if(!db.draft)return;selectedHole=Math.max(0,Math.min(db.draft.pars.length-1,selectedHole+delta));render();}
-function goHole(i){selectedHole=i;render();}
-function finishRound(){let d=db.draft;if(!d)return;if(d.scores.some(x=>x===null)){alert('Please score every hole before finishing.');return;}db.rounds.unshift(d);db.draft=null;save();tab('history');note('Round saved!');}
-function discardRound(){if(confirm('Discard this unfinished round?')){db.draft=null;save();}}
-function deleteRound(id){if(confirm('Permanently delete this round?')){db.rounds=db.rounds.filter(r=>String(r.id)!==String(id));save();}}
-function displayDate(iso){const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return match?match[3]+'.'+match[2]+'.'+match[1]:String(iso||'');}
-function editRound(id){
- const original=db.rounds.find(r=>String(r.id)===String(id));
- if(!original||!validRound(original))return;
- editingRound={id:original.id,date:original.date,scores:[...original.scores],pars:[...original.pars],course:original.course,tees:original.tees,selectedCourseId:''};
- document.getElementById('editDate').value=editingRound.date;
- document.getElementById('editEligible').checked=!!original.eligible;
- document.getElementById('editTest').checked=!!original.test;
- document.getElementById('editCourseName').textContent=editingRound.course;
- const select=document.getElementById('editTeeSelect');select.replaceChildren();
- const current=node('option',String(original.tees||'Standard')+' tees (recorded)');current.value='';select.append(current);
- const matches=db.courses.filter(c=>c.name===original.course&&c.pars.length===original.scores.length);
- matches.forEach(c=>{const option=node('option',c.tees+' tees · CR '+(c.cr??'—')+' · Slope '+(c.slope??'—'));option.value=String(c.id);select.append(option);});
- const same=matches.find(c=>c.tees===original.tees&&c.cr===original.cr&&c.slope===original.slope);
- if(same)select.value=String(same.id);
- document.getElementById('editTeeHint').textContent=matches.length?'Choose the saved tee configuration you actually played. Your strokes will stay the same.':'No matching saved tee configurations found. Add this course and its tees under My Courses first.';
- document.getElementById('editTeeBadge').replaceChildren(teeBadge(editingRound.tees));
- renderEditScores();tab('editRound');
-}
-function changeEditedRoundTees(id){
- if(!editingRound)return;
- const original=db.rounds.find(r=>String(r.id)===String(editingRound.id));
- const selected=db.courses.find(c=>String(c.id)===String(id)&&c.name===editingRound.course&&c.pars.length===editingRound.scores.length);
- editingRound.selectedCourseId=selected?String(selected.id):'';
- editingRound.tees=selected?selected.tees:original.tees;
- editingRound.pars=selected?[...selected.pars]:[...original.pars];
- document.getElementById('editTeeBadge').replaceChildren(teeBadge(editingRound.tees));
- document.getElementById('editTeeHint').textContent=selected?'Selected: CR '+(selected.cr??'—')+' · Slope '+(selected.slope??'—')+'. Scores remain unchanged; hole pars and ratings update when you save.':'Using the tees and course ratings originally recorded for this round.';
- renderEditScores();
-}
-function renderEditScores(){if(!editingRound)return;const list=document.getElementById('editHoleList');list.replaceChildren();editingRound.scores.forEach((strokes,i)=>{const row=node('div',undefined,'edit-hole-row'),info=node('div',undefined,'edit-hole-info'),controls=node('div',undefined,'edit-hole-controls'),minus=node('button','−','secondary'),value=node('strong',String(strokes)),plus=node('button','+');info.append(node('strong','Hole '+(i+1)),node('small','Par '+editingRound.pars[i]));minus.type=plus.type='button';minus.setAttribute('aria-label','Decrease hole '+(i+1)+' strokes');plus.setAttribute('aria-label','Increase hole '+(i+1)+' strokes');minus.disabled=strokes<=1;plus.disabled=strokes>=30;minus.onclick=()=>adjustEditScore(i,-1);plus.onclick=()=>adjustEditScore(i,1);controls.append(minus,value,plus);row.append(info,controls);list.append(row);});document.getElementById('editTotal').textContent=editingRound.scores.reduce((a,b)=>a+b,0)+' strokes';}
-function adjustEditScore(i,delta){if(!editingRound)return;editingRound.scores[i]=Math.max(1,Math.min(30,editingRound.scores[i]+delta));renderEditScores();}
-function cancelEditRound(){editingRound=null;tab('history');}
-function saveEditedRound(){if(!editingRound)return;const date=document.getElementById('editDate').value;const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);if(!m||Number.isNaN(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').getFullYear()!==Number(m[1])||new Date(date+'T12:00:00').getMonth()+1!==Number(m[2])||new Date(date+'T12:00:00').getDate()!==Number(m[3])){alert('Please select a valid date.');return;}const index=db.rounds.findIndex(r=>String(r.id)===String(editingRound.id));if(index<0){alert('This round could not be found.');cancelEditRound();return;}const updated={...db.rounds[index],date,eligible:document.getElementById('editEligible').checked,test:document.getElementById('editTest').checked,scores:[...editingRound.scores]};
- if(editingRound.selectedCourseId){
-  const c=db.courses.find(c=>String(c.id)===editingRound.selectedCourseId&&c.name===updated.course&&c.pars.length===updated.scores.length);
-  if(!c){alert('The selected tee configuration is no longer available.');return;}
-  updated.tees=c.tees;updated.pars=[...c.pars];updated.cr=c.cr;updated.slope=c.slope;
-  updated.strokeIndices=validStrokeIndices(c.strokeIndices,c.pars.length)?[...c.strokeIndices]:Array(c.pars.length).fill(null);
-  updated.distances=validDistances(c.distances,c.pars.length)?[...c.distances]:Array(c.pars.length).fill(null);
-  updated.distanceUnit=courseUnit(c);
- }
-if(!validRound(updated)||updated.scores.includes(null)){alert('Please check your scores.');return;}db.rounds[index]=updated;editingRound=null;save();tab('history');note('Round updated successfully.');}
-function scoreDiff(r){return r.scores.reduce((a,b)=>a+(b||0),0)-r.pars.reduce((a,b,i)=>a+(r.scores[i]===null?0:b),0);}
-function signed(n){return n===0?'E':n>0?'+'+n:String(n);}
-function node(tag,text,cls){let e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
-function teeClass(value){let t=String(value||'').trim().toLowerCase().split(/[\s\-_/]+/)[0];return ['yellow','white','blue','red','black','orange','green'].includes(t)?'tee-'+t:'';}
-function teeBadge(value){let label=String(value||'Standard').trim()||'Standard';return node('span',label+' tees','tee-badge '+teeClass(label));}
-function render(){let valid=db.rounds.filter(r=>validRound(r)&&r.scores.every(s=>s!==null));const genuine=valid.filter(r=>!r.test);document.getElementById('nRounds').textContent=genuine.length;document.getElementById('nHoles').textContent=genuine.reduce((a,r)=>a+r.scores.length,0);document.getElementById('nBest').textContent=genuine.length?signed(Math.min(...genuine.map(scoreDiff))):'—';renderHome(genuine);renderHandicap(valid);renderPlayer(valid);if(typeof renderUnifiedCourseUI==='function')renderUnifiedCourseUI();document.getElementById('setup').classList.toggle('hidden',!!db.draft);document.getElementById('playing').classList.toggle('hidden',!db.draft);if(db.draft){let d=db.draft;selectedHole=Math.min(selectedHole,d.pars.length-1);document.getElementById('activeCourse').textContent=d.course;let activeBadge=document.getElementById('activeTeeBadge');activeBadge.replaceChildren(teeBadge(d.tees));document.getElementById('activeHole').textContent='Hole '+(selectedHole+1);let completed=d.scores.filter(s=>s!==null).length;document.getElementById('activeProgress').textContent=completed+'/'+d.scores.length+' holes scored';document.getElementById('activeTotal').textContent=d.scores.reduce((a,b)=>a+(b||0),0);document.getElementById('activeDiff').textContent=signed(scoreDiff(d))+' to par';let nav=document.getElementById('holeNav');nav.replaceChildren();d.scores.forEach((s,i)=>{let b=node('button',String(i+1));if(i===selectedHole)b.classList.add('selected');if(s!==null)b.classList.add('done');b.onclick=()=>goHole(i);nav.append(b);});document.getElementById('holeNumberDisplay').textContent='Hole '+(selectedHole+1);document.getElementById('holeParDisplay').textContent='Par '+d.pars[selectedHole];document.getElementById('holeStrokeIndexDisplay').innerHTML='<span class="si-pill">Stroke Index '+(Number.isInteger(d.strokeIndices?.[selectedHole])?d.strokeIndices[selectedHole]:'—')+'</span>';document.getElementById('holeDistanceDisplay').textContent=Number.isFinite(d.distances?.[selectedHole])&&d.distances[selectedHole]>0?'Distance · '+distanceLabel(d.distances[selectedHole],courseUnit(d)):'Distance not entered';document.getElementById('strokesNumber').textContent=d.scores[selectedHole]??'—';document.getElementById('holeStatus').textContent=d.scores[selectedHole]===null?'Tap + to enter strokes':signed(d.scores[selectedHole]-d.pars[selectedHole])+' on this hole';renderHoleTracking(d);}let hist=document.getElementById('historyList');hist.replaceChildren();if(!valid.length)hist.append(node('p','No completed rounds yet.','muted'));valid.forEach(r=>{let div=node('div',undefined,'round-item'),top=node('div',undefined,'round-summary'),left=node('div',undefined,'round-summary-left'),right=node('div',undefined,'round-summary-right'),date=node('div',displayDate(r.date)+' · '+r.scores.length+' holes','round-date'),h=node('h3',r.course),tee=node('div',undefined,'round-tee'),scoreLabel=node('small','TOTAL STROKES'),score=node('strong',String(r.scores.reduce((a,b)=>a+b,0)),'round-score'),diff=node('span',signed(scoreDiff(r)),'round-diff'),details=document.createElement('details'),summary=node('summary','View scorecard'),table=document.createElement('table');tee.append(teeBadge(r.tees),node('span','  · Par '+r.pars.reduce((a,b)=>a+b,0)));left.append(date,h,tee);right.append(scoreLabel,score,diff);top.append(left,right);table.className='scoretable';let head=document.createElement('tr');['Hole','Par','Distance','Strokes','+/-'].forEach(x=>head.append(node('th',x)));table.append(head);r.scores.forEach((s,i)=>{let tr=document.createElement('tr');[i+1,r.pars[i],distanceLabel(r.distances?.[i],courseUnit(r)),s,signed(s-r.pars[i])].forEach((v,j)=>{let td=node('td',String(v));if(j===4)td.className=s-r.pars[i]>0?'positive':s-r.pars[i]<0?'negative':'';tr.append(td);});table.append(tr);});details.append(summary,table);let meta=node('p','CR: '+(r.cr??'—')+' · Slope: '+(r.slope??'—'),'muted'),del=node('button','Delete round','danger');del.onclick=()=>deleteRound(r.id);let edit=node('button','Edit round','secondary'),actions=node('div',undefined,'actions');edit.onclick=()=>editRound(r.id);actions.append(edit,del);div.append(top,details,meta,actions);hist.append(div);});document.getElementById('historyCount').textContent=valid.length+' '+(valid.length===1?'round':'rounds');renderAchievements(genuine);}
-
-// Handicap calculations: 18-hole adjusted gross scoring when full stroke-index data and
-// a user-supplied reference HI exist. Nine-hole results remain explicitly approximate.
-
-
-
-
-function renderHome(rounds){
- const awards=[{name:'Birdies',emoji:'🐦',count:0},{name:'Eagles',emoji:'🦅',count:0},{name:'Hole-in-ones',emoji:'🏆',count:0},{name:'Albatrosses',emoji:'✨',count:0}];
- let pars=0;
- rounds.forEach(r=>r.scores.forEach((strokes,i)=>{let d=strokes-r.pars[i];if(d===0)pars++;if(d===-1)awards[0].count++;if(d===-2)awards[1].count++;if(strokes===1)awards[2].count++;if(d===-3)awards[3].count++;}));
- document.getElementById('nPars').textContent=pars;
- const top=awards.reduce((best,item)=>item.count>best.count?item:best,awards[0]);
- document.getElementById('featuredEmoji').textContent=top.count?top.emoji:'🏆';
- document.getElementById('featuredTitle').textContent=top.count?top.count+' '+top.name:'Your first achievement awaits';
- document.getElementById('featuredDescription').textContent=top.count?'Your most-earned special achievement. Keep it going!':'Save a round to start collecting awards.';
- const latest=rounds.reduce((best,r)=>!best||String(r.date)>String(best.date)?r:best,null);
- document.getElementById('latestEmpty').classList.toggle('hidden',!!latest);
- document.getElementById('latestDetails').classList.toggle('hidden',!latest);
- if(latest){document.getElementById('latestDate').textContent=displayDate(latest.date)+' · '+latest.scores.length+' holes';document.getElementById('latestCourse').textContent=latest.course;document.getElementById('latestTee').replaceChildren(teeBadge(latest.tees));document.getElementById('latestScore').textContent=latest.scores.reduce((a,b)=>a+b,0);document.getElementById('latestDiff').textContent=signed(scoreDiff(latest))+' to par';}
-}
-function renderAchievements(rounds){
- const counts={birdies:0,eagles:0,aces:0,albatrosses:0,pars:0};
- let holes=0,best=null;
- rounds.forEach(r=>{
-  holes+=r.scores.length;
-  let diff=scoreDiff(r);
-  if(best===null||diff<best)best=diff;
-  r.scores.forEach((strokes,i)=>{
-   const delta=strokes-r.pars[i];
-   if(delta===-1)counts.birdies++;
-   if(delta===-2)counts.eagles++;
-   if(delta===-3)counts.albatrosses++;
-   if(delta===0)counts.pars++;
-   if(strokes===1)counts.aces++;
+function render() {
+  let valid = db.rounds.filter(
+    (r) => validRound(r) && r.scores.every((s) => s !== null),
+  );
+  const genuine = valid.filter((r) => !r.test);
+  document.getElementById("nRounds").textContent = genuine.length;
+  document.getElementById("nHoles").textContent = genuine.reduce(
+    (a, r) => a + r.scores.length,
+    0,
+  );
+  document.getElementById("nBest").textContent = genuine.length
+    ? signed(Math.min(...genuine.map(scoreDiff)))
+    : "—";
+  renderHome(genuine);
+  renderHandicap(valid);
+  renderPlayer(valid);
+  renderUnifiedCourseUI();
+  document.getElementById("setup").classList.toggle("hidden", !!db.draft);
+  document.getElementById("playing").classList.toggle("hidden", !db.draft);
+  if (db.draft) {
+    let d = db.draft;
+    selectedHole = Math.min(selectedHole, d.pars.length - 1);
+    document.getElementById("activeCourse").textContent = d.course;
+    let activeBadge = document.getElementById("activeTeeBadge");
+    activeBadge.replaceChildren(teeBadge(d.tees));
+    document.getElementById("activeHole").textContent =
+      "Hole " + (selectedHole + 1);
+    let completed = d.scores.filter((s) => s !== null).length;
+    document.getElementById("activeProgress").textContent =
+      completed + "/" + d.scores.length + " holes scored";
+    document.getElementById("activeTotal").textContent = d.scores.reduce(
+      (a, b) => a + (b || 0),
+      0,
+    );
+    document.getElementById("activeDiff").textContent =
+      signed(scoreDiff(d)) + " to par";
+    let nav = document.getElementById("holeNav");
+    nav.replaceChildren();
+    d.scores.forEach((s, i) => {
+      let b = node("button", String(i + 1));
+      if (i === selectedHole) b.classList.add("selected");
+      if (s !== null) b.classList.add("done");
+      b.onclick = () => goHole(i);
+      nav.append(b);
+    });
+    document.getElementById("holeNumberDisplay").textContent =
+      "Hole " + (selectedHole + 1);
+    document.getElementById("holeParDisplay").textContent =
+      "Par " + d.pars[selectedHole];
+    document.getElementById("holeStrokeIndexDisplay").innerHTML =
+      '<span class="si-pill">Stroke Index ' +
+      (Number.isInteger(d.strokeIndices?.[selectedHole])
+        ? d.strokeIndices[selectedHole]
+        : "—") +
+      "</span>";
+    document.getElementById("holeDistanceDisplay").textContent =
+      Number.isFinite(d.distances?.[selectedHole]) &&
+      d.distances[selectedHole] > 0
+        ? "Distance · " +
+          distanceLabel(d.distances[selectedHole], courseUnit(d))
+        : "Distance not entered";
+    document.getElementById("strokesNumber").textContent =
+      d.scores[selectedHole] ?? "—";
+    document.getElementById("holeStatus").textContent =
+      d.scores[selectedHole] === null
+        ? "Tap + or − to start at par"
+        : signed(d.scores[selectedHole] - d.pars[selectedHole]) +
+          " on this hole";
+    renderHoleTracking(d);
+  }
+  let hist = document.getElementById("historyList");
+  hist.replaceChildren();
+  if (!valid.length)
+    hist.append(node("p", "No completed rounds yet.", "muted"));
+  valid.forEach((r) => {
+    let div = node("div", undefined, "round-item"),
+      top = node("div", undefined, "round-summary"),
+      left = node("div", undefined, "round-summary-left"),
+      right = node("div", undefined, "round-summary-right"),
+      date = node(
+        "div",
+        displayDate(r.date) + " · " + r.scores.length + " holes",
+        "round-date",
+      ),
+      h = node("h3", r.course),
+      tee = node("div", undefined, "round-tee"),
+      scoreLabel = node("small", "TOTAL STROKES"),
+      score = node(
+        "strong",
+        String(r.scores.reduce((a, b) => a + b, 0)),
+        "round-score",
+      ),
+      diff = node("span", signed(scoreDiff(r)), "round-diff"),
+      details = document.createElement("details"),
+      summary = node("summary", "View scorecard"),
+      table = document.createElement("table");
+    tee.append(
+      teeBadge(r.tees),
+      node("span", "  · Par " + r.pars.reduce((a, b) => a + b, 0)),
+    );
+    left.append(date, h, tee);
+    right.append(scoreLabel, score, diff);
+    top.append(left, right);
+    table.className = "scoretable";
+    let head = document.createElement("tr");
+    ["Hole", "Par", "Distance", "Strokes", "+/-"].forEach((x) =>
+      head.append(node("th", x)),
+    );
+    table.append(head);
+    r.scores.forEach((s, i) => {
+      let tr = document.createElement("tr");
+      [
+        i + 1,
+        r.pars[i],
+        distanceLabel(r.distances?.[i], courseUnit(r)),
+        s,
+        signed(s - r.pars[i]),
+      ].forEach((v, j) => {
+        let td = node("td", String(v));
+        if (j === 4)
+          td.className =
+            s - r.pars[i] > 0
+              ? "positive"
+              : s - r.pars[i] < 0
+                ? "negative"
+                : "";
+        tr.append(td);
+      });
+      table.append(tr);
+    });
+    details.append(summary, table);
+    let meta = node(
+        "p",
+        "CR: " + (r.cr ?? "—") + " · Slope: " + (r.slope ?? "—"),
+        "muted",
+      ),
+      del = node("button", "Delete round", "danger");
+    del.onclick = () => deleteRound(r.id);
+    let edit = node("button", "Edit round", "secondary"),
+      actions = node("div", undefined, "actions");
+    edit.onclick = () => editRound(r.id);
+    actions.append(edit, del);
+    div.append(top, details, meta, actions);
+    hist.append(div);
   });
- });
- const awards=[
-  ['🐦','Birdies',counts.birdies,'1 under par'],
-  ['🦅','Eagles',counts.eagles,'2 under par'],
-  ['🏆','Hole-in-ones',counts.aces,'One stroke'],
-  ['✨','Albatrosses',counts.albatrosses,'3 under par']
- ];
- const grid=document.getElementById('awardGrid');grid.replaceChildren();
- awards.forEach(([emoji,title,value,description])=>{
-  let card=node('div',undefined,'award-card');
-  card.append(node('div',emoji,'award-emoji'),node('div',String(value),'award-count'),node('div',title,'award-title'),node('div',description,'award-desc'));
-  grid.append(card);
- });
- const milestones=[['Completed rounds',rounds.length],['Holes played',holes],['Pars made',counts.pars],['Best round to par',best===null?'—':signed(best)]];
- const list=document.getElementById('milestoneList');list.replaceChildren();
- milestones.forEach(([name,value])=>{let row=node('div',undefined,'milestone-row');row.append(node('span',name),node('strong',String(value)));list.append(row);});
+  document.getElementById("historyCount").textContent =
+    valid.length + " " + (valid.length === 1 ? "round" : "rounds");
+  renderAchievements(genuine);
 }
 
+function renderHome(rounds) {
+  const awards = [
+    { name: "Birdies", emoji: "🐦", count: 0 },
+    { name: "Eagles", emoji: "🦅", count: 0 },
+    { name: "Hole-in-ones", emoji: "🏆", count: 0 },
+    { name: "Albatrosses", emoji: "✨", count: 0 },
+  ];
+  let pars = 0;
+  rounds.forEach((r) =>
+    r.scores.forEach((strokes, i) => {
+      let d = strokes - r.pars[i];
+      if (d === 0) pars++;
+      if (d === -1) awards[0].count++;
+      if (d === -2) awards[1].count++;
+      if (strokes === 1) awards[2].count++;
+      if (d === -3) awards[3].count++;
+    }),
+  );
+  document.getElementById("nPars").textContent = pars;
+  const top = awards.reduce(
+    (best, item) => (item.count > best.count ? item : best),
+    awards[0],
+  );
+  document.getElementById("featuredEmoji").textContent = top.count
+    ? top.emoji
+    : "🏆";
+  document.getElementById("featuredTitle").textContent = top.count
+    ? top.count + " " + top.name
+    : "Your first achievement awaits";
+  document.getElementById("featuredDescription").textContent = top.count
+    ? "Your most-earned special achievement. Keep it going!"
+    : "Save a round to start collecting awards.";
+  const latest = rounds.reduce(
+    (best, r) => (!best || String(r.date) > String(best.date) ? r : best),
+    null,
+  );
+  document.getElementById("latestEmpty").classList.toggle("hidden", !!latest);
+  document.getElementById("latestDetails").classList.toggle("hidden", !latest);
+  if (latest) {
+    document.getElementById("latestDate").textContent =
+      displayDate(latest.date) + " · " + latest.scores.length + " holes";
+    document.getElementById("latestCourse").textContent = latest.course;
+    document.getElementById("latestTee").replaceChildren(teeBadge(latest.tees));
+    document.getElementById("latestScore").textContent = latest.scores.reduce(
+      (a, b) => a + b,
+      0,
+    );
+    document.getElementById("latestDiff").textContent =
+      signed(scoreDiff(latest)) + " to par";
+  }
+}
 
+function renderAchievements(rounds) {
+  const counts = { birdies: 0, eagles: 0, aces: 0, albatrosses: 0, pars: 0 };
+  let holes = 0,
+    best = null;
+  rounds.forEach((r) => {
+    holes += r.scores.length;
+    let diff = scoreDiff(r);
+    if (best === null || diff < best) best = diff;
+    r.scores.forEach((strokes, i) => {
+      const delta = strokes - r.pars[i];
+      if (delta === -1) counts.birdies++;
+      if (delta === -2) counts.eagles++;
+      if (delta === -3) counts.albatrosses++;
+      if (delta === 0) counts.pars++;
+      if (strokes === 1) counts.aces++;
+    });
+  });
+  const awards = [
+    ["🐦", "Birdies", counts.birdies, "1 under par"],
+    ["🦅", "Eagles", counts.eagles, "2 under par"],
+    ["🏆", "Hole-in-ones", counts.aces, "One stroke"],
+    ["✨", "Albatrosses", counts.albatrosses, "3 under par"],
+  ];
+  const grid = document.getElementById("awardGrid");
+  grid.replaceChildren();
+  awards.forEach(([emoji, title, value, description]) => {
+    let card = node("div", undefined, "award-card");
+    card.append(
+      node("div", emoji, "award-emoji"),
+      node("div", String(value), "award-count"),
+      node("div", title, "award-title"),
+      node("div", description, "award-desc"),
+    );
+    grid.append(card);
+  });
+  const milestones = [
+    ["Completed rounds", rounds.length],
+    ["Holes played", holes],
+    ["Pars made", counts.pars],
+    ["Best round to par", best === null ? "—" : signed(best)],
+  ];
+  const list = document.getElementById("milestoneList");
+  list.replaceChildren();
+  milestones.forEach(([name, value]) => {
+    let row = node("div", undefined, "milestone-row");
+    row.append(node("span", name), node("strong", String(value)));
+    list.append(row);
+  });
+}
 
+function tab(t) {
+  document
+    .querySelectorAll("main section")
+    .forEach((x) => x.classList.toggle("hidden", x.id !== t));
+  document
+    .querySelectorAll("nav button")
+    .forEach((b) => b.classList.toggle("active", b.dataset.tab === t));
+  if (t === "play") refreshRoundDate();
+  render();
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
 
+// The round date defaults to today, unless the person picked one themselves.
+function refreshRoundDate() {
+  const input = uGet("roundDate");
+  if (!input.dataset.touched)
+    input.value = new Date().toLocaleDateString("en-CA");
+}
 
+// iOS: hide fixed navigation while an editing keyboard is visible.
+(function () {
+  let focused = false;
+  const isTextField = (e) =>
+    e?.matches?.(
+      "input:not([type=checkbox]):not([type=radio]):not([type=date]), textarea",
+    );
+  function update() {
+    const viewport = window.visualViewport;
+    const keyboard = viewport && window.innerHeight - viewport.height > 140;
+    document.body.classList.toggle("fw-keyboard-open", !!(focused && keyboard));
+  }
+  document.addEventListener("focusin", (e) => {
+    focused = isTextField(e.target);
+    update();
+  });
+  document.addEventListener("focusout", () => {
+    focused = false;
+    update();
+  });
+  window.visualViewport?.addEventListener("resize", update);
+  window.addEventListener("resize", update);
+})();
 
-
-
-
-
-
-document.getElementById('roundDate').value=new Date().toLocaleDateString('en-CA');renderCoursePars();save();
+// ---- Start-up ----
+document
+  .querySelectorAll("nav button")
+  .forEach((b) => (b.onclick = () => tab(b.dataset.tab)));
+uGet("courseSelect").addEventListener("change", uUpdateRoundOptions);
+uGet("roundDate").addEventListener(
+  "input",
+  (e) => (e.target.dataset.touched = "1"),
+);
+uMigrate();
+refreshRoundDate();
+render();
+if ("serviceWorker" in navigator)
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+navigator.storage?.persist?.().catch?.(() => {});
