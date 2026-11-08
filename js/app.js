@@ -68,6 +68,10 @@ function render() {
         ? "Tap + or − to start at par"
         : signed(d.scores[selectedHole] - d.pars[selectedHole]) +
           " on this hole";
+    const nextButton = document.getElementById("holeNextButton");
+    const isLastHole = selectedHole === d.pars.length - 1;
+    nextButton.textContent = isLastHole ? "✓ Finish round" : "Next →";
+    nextButton.onclick = isLastHole ? finishRound : () => moveHole(1);
     renderHoleTracking(d);
   }
   let hist = document.getElementById("historyList");

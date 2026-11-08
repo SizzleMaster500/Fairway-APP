@@ -109,12 +109,17 @@ function uIconPath(key) {
 }
 
 function uIconElement(key) {
+  // Crop the decorative gold frame inside a fixed viewport, rather than
+  // stretching or altering the source illustration.
+  const frame = document.createElement("span");
+  frame.className = "u-course-icon";
   const img = document.createElement("img");
   img.src = uIconPath(key);
   img.alt = "";
-  img.className = "u-course-icon";
   img.loading = "lazy";
-  return img;
+  img.decoding = "async";
+  frame.append(img);
+  return frame;
 }
 
 function renderUnifiedCourseUI() {
