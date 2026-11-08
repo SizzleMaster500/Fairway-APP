@@ -1,6 +1,6 @@
 // Fairway service worker: lets the app open offline (e.g. on a course with no signal).
 // Bump CACHE on every release so phones drop the old files.
-const CACHE = "fairway-v0.11.0";
+const CACHE = "fairway-v0.11.1";
 const ASSETS = [
   "./",
   "./index.html",

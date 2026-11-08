@@ -1509,11 +1509,23 @@ input[type="checkbox"] {
 .u-course-icon {
   width: 68px;
   height: 68px;
-  object-fit: cover;
   border-radius: 16px;
   display: block;
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
   background: #103023;
+}
+.u-course-icon > img {
+  display: block;
+  position: absolute;
+  width: 114%;
+  height: 114%;
+  max-width: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
 }
 .u-icon-picker {
   display: grid;
